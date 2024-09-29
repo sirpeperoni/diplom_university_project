@@ -13,13 +13,25 @@ import 'package:the_movie_db/ui/navigation/main_navigation.dart';
 class MovieDetailsPosterData {
   final String? backdorPath;
   final String? posterPath;
-  final IconData favoriteIcon;
+  final bool isFavorite;
+  IconData get favoriteIcon => isFavorite ? Icons.favorite : Icons.favorite_outline;
 
-  MovieDetailsPosterData({
-    this.backdorPath, 
-    this.posterPath, 
-    this.favoriteIcon = Icons.favorite_outline
+   MovieDetailsPosterData({
+    this.backdorPath,
+    this.posterPath,
+    this.isFavorite = false,
   });
+   MovieDetailsPosterData copyWith({
+    String? backdropPath,
+    String? posterPath,
+    bool? isFavorite,
+  }) {
+    return MovieDetailsPosterData(
+      backdorPath: backdropPath ?? this.backdorPath,
+      posterPath: posterPath ?? this.posterPath,
+      isFavorite: isFavorite ?? this.isFavorite,
+    );
+  }
 }
 
 class MovieDetailsMovieNameData{
@@ -71,16 +83,12 @@ class MovieDetailsModel extends ChangeNotifier{
   final authService = AuthService();  
   final int movieId;
   final data = MovieDetailsData();
-  bool _isFavorite = false;
-  MovieDetails? _movieDetails;
   final _movieApiClient = MovieApiClient();
   final _accountApiClient = AccountApiClient();
   String _locale = '';
   late DateFormat _dateFormat;
   Future<void>? Function()? onSessionExpired;
 
-  bool get isFavorite => _isFavorite;
-  MovieDetails? get movieDetails => _movieDetails;
 
   MovieDetailsModel(this.movieId);
 
@@ -93,17 +101,16 @@ class MovieDetailsModel extends ChangeNotifier{
     await loadDetails(context);
   }
 
-  String stringFromDate(DateTime? date) =>
-      date != null ? _dateFormat.format(date) : '';
 
   Future<void> loadDetails(BuildContext context) async {
     try{
-      _movieDetails = await _movieApiClient.movieDetails(movieId, _locale);
+      final _movieDetails = await _movieApiClient.movieDetails(movieId, _locale);
       final sessionId = await _sessionDataProvider.getSessionId();
+      var isFavorite = false;
       if(sessionId != null){
-        _isFavorite = await _movieApiClient.isFavorite(movieId, sessionId);
+        isFavorite = await _movieApiClient.isFavorite(movieId, sessionId);
       }
-      updateData(_movieDetails, _isFavorite);
+      updateData(_movieDetails, isFavorite);
     } on ApiClientException catch(e) {
       _handleApiClientException(e, context);
     }
@@ -117,11 +124,11 @@ class MovieDetailsModel extends ChangeNotifier{
       return;
     }
     data.overview = details.overview ?? '';
-    final iconData = isFavorite ? Icons.favorite : Icons.favorite_outline; 
+
     data.posterData = MovieDetailsPosterData(
       posterPath: details.posterPath, 
       backdorPath: details.backdropPath, 
-      favoriteIcon: iconData
+      isFavorite: isFavorite
     );
     var year = details.releaseDate?.year.toString();
     year = year != null ? ' ($year)' : '';
@@ -185,7 +192,7 @@ class MovieDetailsModel extends ChangeNotifier{
     final accountId = await _sessionDataProvider.getAccountId();
 
     if(sessionId == null || accountId == null) return;
-    _isFavorite = !_isFavorite;
+    data.posterData = data.posterData.copyWith(isFavorite: !data.posterData.isFavorite);
     notifyListeners();
     try{
       await _accountApiClient.markAsFavorite(
@@ -193,7 +200,7 @@ class MovieDetailsModel extends ChangeNotifier{
         sessionId: sessionId,
         mediaType: MediaType.movie,
         mediaId: movieId,
-        isFavorite: _isFavorite,
+        isFavorite: data.posterData.isFavorite,
       );
     } on ApiClientException catch(e) {
       _handleApiClientException(e, context);

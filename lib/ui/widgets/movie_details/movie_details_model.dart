@@ -2,12 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:the_movie_db/domain/api_client/account_api_client.dart';
-import 'package:the_movie_db/domain/api_client/movie_api_client.dart';
 import 'package:the_movie_db/domain/api_client/api_client_exception.dart';
-import 'package:the_movie_db/domain/data_providers/session_data_provider.dart';
 import 'package:the_movie_db/domain/entity/movie_details.dart';
 import 'package:the_movie_db/domain/services/auth_service.dart';
+import 'package:the_movie_db/domain/services/movie_service.dart';
+import 'package:the_movie_db/library/Widgets/localized_model.dart';
 import 'package:the_movie_db/ui/navigation/main_navigation.dart';
 
 class MovieDetailsPosterData {
@@ -79,42 +78,26 @@ class MovieDetailsData {
 
 
 class MovieDetailsModel extends ChangeNotifier{
-  final _sessionDataProvider = SessionDataProvider();
-  final authService = AuthService();  
+  final _movieService = MovieService();
+  final _authService = AuthService();  
   final int movieId;
   final data = MovieDetailsData();
-  final _movieApiClient = MovieApiClient();
-  final _accountApiClient = AccountApiClient();
-  String _locale = '';
+  final _localeStorage = LocalizedModelStorage();
   late DateFormat _dateFormat;
   Future<void>? Function()? onSessionExpired;
 
 
   MovieDetailsModel(this.movieId);
 
-  Future<void> setupLocale(BuildContext context) async {
-    final locale =Localizations.localeOf(context).toLanguageTag();
-    if(_locale == locale) return;
-    _locale = locale;
-    _dateFormat = DateFormat.yMMMMd(locale);
+  Future<void> setupLocale(BuildContext context, Locale locale) async {
+    if(!_localeStorage.updateLocale(locale)) return;
+    _dateFormat = DateFormat.yMMMMd(_localeStorage.localeTag);
     updateData(null, false);
     await loadDetails(context);
   }
 
 
-  Future<void> loadDetails(BuildContext context) async {
-    try{
-      final _movieDetails = await _movieApiClient.movieDetails(movieId, _locale);
-      final sessionId = await _sessionDataProvider.getSessionId();
-      var isFavorite = false;
-      if(sessionId != null){
-        isFavorite = await _movieApiClient.isFavorite(movieId, sessionId);
-      }
-      updateData(_movieDetails, isFavorite);
-    } on ApiClientException catch(e) {
-      _handleApiClientException(e, context);
-    }
-  }
+
 
   void updateData(MovieDetails? details,bool isFavorite){
     data.title = details?.title ?? "Загрузка...";
@@ -187,20 +170,23 @@ class MovieDetailsModel extends ChangeNotifier{
     return crewChunks;
   }
 
-  Future<void> toggleFavorite(BuildContext context) async {
-    final sessionId = await _sessionDataProvider.getSessionId();
-    final accountId = await _sessionDataProvider.getAccountId();
+  Future<void> loadDetails(BuildContext context) async {
+    try{
+      final details = await _movieService.loadDetails(locale: _localeStorage.localeTag, movieId: movieId);
+      updateData(details.details, details.isFavorite);
+    } on ApiClientException catch(e) {
+      _handleApiClientException(e, context);
+    }
+  }
 
-    if(sessionId == null || accountId == null) return;
+  Future<void> toggleFavorite(BuildContext context) async {
+    
     data.posterData = data.posterData.copyWith(isFavorite: !data.posterData.isFavorite);
     notifyListeners();
     try{
-      await _accountApiClient.markAsFavorite(
-        accountId: accountId,
-        sessionId: sessionId,
-        mediaType: MediaType.movie,
-        mediaId: movieId,
-        isFavorite: data.posterData.isFavorite,
+      await _movieService.updateFavorite(
+        isFavorite: data.posterData.isFavorite, 
+        movieId: movieId
       );
     } on ApiClientException catch(e) {
       _handleApiClientException(e, context);
@@ -210,7 +196,7 @@ class MovieDetailsModel extends ChangeNotifier{
   void _handleApiClientException(ApiClientException exeption, BuildContext context){
       switch (exeption.type) {
         case ApiClientExceptionType.sessionExpired:
-          authService.logout();
+          _authService.logout();
           MainNavigation.resetNavigation(context);
           break;
         default:

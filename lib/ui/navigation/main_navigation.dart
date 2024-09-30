@@ -7,6 +7,7 @@ abstract class MainNavigationRoutesName{
   static const auth = '/auth';
   static const mainScreen = '/main_screen';
   static const tvShowScreen = '/tv_show_screen';
+  static const personsScreen = '/persons_screen';
   static const movieDetails = '/main_screen/movie_details';
   static const movieTrailerWidget = '/main_screen/movie_details/trailer';
 }
@@ -22,7 +23,8 @@ class MainNavigation{
     MainNavigationRoutesName.loaderWidget: (_) => _screenFactory.makeLoader(),
     MainNavigationRoutesName.auth: (_) => _screenFactory.makeAuthWidget(),
     MainNavigationRoutesName.mainScreen: (_) => _screenFactory.makeMainScreenWidget(),
-    MainNavigationRoutesName.tvShowScreen: (_) => _screenFactory.makeTvShowList()
+    MainNavigationRoutesName.tvShowScreen: (_) => _screenFactory.makeTvShowList(),
+    MainNavigationRoutesName.personsScreen: (_) => _screenFactory.makePeopleList()
   };
 
   Route<Object> onGenerateRoute(RouteSettings settings){

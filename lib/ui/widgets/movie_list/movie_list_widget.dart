@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:the_movie_db/domain/api_client/image_downloader.dart';
 import 'package:the_movie_db/ui/widgets/movie_list/movie_list_model.dart';
@@ -12,6 +14,7 @@ class MovieListWidget extends StatefulWidget {
 }
 
 class _MovieListWidgetState extends State<MovieListWidget> {
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -24,6 +27,7 @@ class _MovieListWidgetState extends State<MovieListWidget> {
       children: [
         _MovieListWidget(),
         _SearchWidget(),
+        ChangePage(),
       ],
     );
   }
@@ -148,5 +152,95 @@ class _MovieListRowWidget extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+
+class ChangePage extends StatefulWidget {
+  const ChangePage({super.key});
+
+  @override
+  State<ChangePage> createState() => _ChangePageState();
+}
+
+class _ChangePageState extends State<ChangePage> {
+  int _indexPage = 1;
+  Color containerColor1 = Colors.green;
+  Color containerColor2 = Colors.black;
+  void changeColor(){
+    if(_indexPage == 1){
+      containerColor1 = Colors.green;
+      containerColor2 = Colors.black;
+    }
+    if(_indexPage == 2){
+      containerColor1 = Colors.black;
+      containerColor2 = Colors.green;
+    }
+    setState(() {
+      
+    });
+  }
+  @override
+  Widget build(BuildContext context) {
+    return         Stack(
+          children: [
+            Positioned(
+              bottom: 10,
+              left: MediaQuery.sizeOf(context).width / 6,
+              child: Container(
+                decoration: const BoxDecoration(
+                  boxShadow: [
+                    BoxShadow(color: Colors.black, spreadRadius: 3),
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      width: MediaQuery.sizeOf(context).width / 3,
+                      height: 35,
+                      color: containerColor1,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(10),
+                        onTap: () {
+                            _indexPage = 1;
+                            changeColor();
+                        },
+                        child: const Center(
+                          child: Text(
+                            "Фильмы",
+                            style: TextStyle(
+                              color: Colors.white
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      width: MediaQuery.sizeOf(context).width / 3,
+                      height: 35,
+                      color: containerColor2,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(10),
+                        onTap: () {
+                            _indexPage = 2;
+                            changeColor();
+                        },
+                        child: const Center(
+                          child: Text(
+                            "Актёры",
+                          style: TextStyle(
+                            color: Colors.white
+                          ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+          ],
+        );
   }
 }

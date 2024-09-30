@@ -1,29 +1,29 @@
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:the_movie_db/domain/api_client/image_downloader.dart';
-import 'package:the_movie_db/ui/widgets/tv_show_list_widget.dart/tv_show_list_model.dart';
+import 'package:the_movie_db/ui/widgets/people/people_list_view_model.dart';
 
 
-class TWShowListWidget extends StatefulWidget {
-  const TWShowListWidget({super.key});
+class PeopleListWidget extends StatefulWidget {
+  const PeopleListWidget({super.key});
 
   @override
-  State<TWShowListWidget> createState() => _TWShowListWidgetState();
+  State<PeopleListWidget> createState() => _PeopleListWidgetState();
 }
 
-class _TWShowListWidgetState extends State<TWShowListWidget> {
+class _PeopleListWidgetState extends State<PeopleListWidget> {
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     final locale = Localizations.localeOf(context);
-    context.read<TvShowViewModel>().setupLocale(locale);
+    context.read<PeopleListViewModel>().setupLocale(locale);
   }
   @override
   Widget build(BuildContext context) {
     return const Stack(
       children: [
-        _TvShowListWidget(),
+        _PeopleListWidget(),
         _SearchWidget(),
       ],
     );
@@ -32,13 +32,14 @@ class _TWShowListWidgetState extends State<TWShowListWidget> {
 
 class _SearchWidget extends StatelessWidget {
   const _SearchWidget();
+
   @override
   Widget build(BuildContext context) {
-    final model = context.watch<TvShowViewModel>();
+    final model = context.watch<PeopleListViewModel>();
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: TextField(
-        onChanged: model.serachTvShow,
+        onChanged: model.searchPeople,
         decoration: InputDecoration(
           labelText: 'Поиск',
           filled: true,
@@ -50,37 +51,36 @@ class _SearchWidget extends StatelessWidget {
   }
 }
 
-class _TvShowListWidget extends StatelessWidget {
-  const _TvShowListWidget();
+class _PeopleListWidget extends StatelessWidget {
+  const _PeopleListWidget();
 
-  
   @override
   Widget build(BuildContext context) {
-    final model = context.watch<TvShowViewModel>();
+    final model = context.watch<PeopleListViewModel>();
     return ListView.builder(
       padding: const EdgeInsets.only(top: 70),
       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-      itemCount: model.shows.length,
+      itemCount: model.people.length,
       itemExtent: 163,
       itemBuilder: (BuildContext context, int index) {
-        model.showedTvShowAtIndex(index);
-        return _TvShowListRowWidget(index: index,);
+        model.showedPeopleAtIndex(index);
+        return _PeopleListRowWidget(index: index);
       },
     );
   }
 }
 
 
-class _TvShowListRowWidget extends StatelessWidget {
+class _PeopleListRowWidget extends StatelessWidget {
   final int index;
-  const _TvShowListRowWidget
+  const _PeopleListRowWidget
   ({required this.index});
 
   @override
   Widget build(BuildContext context) {
-    final model = context.read<TvShowViewModel>();
-    final show = model.shows[index];
-    final posterPath = show.posterPath;
+    final model = context.read<PeopleListViewModel>();
+    final person = model.people[index];
+    final profilePath = person.profilePath;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       child: Stack(
@@ -101,9 +101,9 @@ class _TvShowListRowWidget extends StatelessWidget {
             clipBehavior: Clip.hardEdge,
             child: Row(
               children: [
-                if(posterPath != null)
+                if(profilePath != null)
                   Image.network(
-                    ImageDownloader.imageUrl(posterPath),
+                    ImageDownloader.imageUrl(profilePath),
                     width: 95
                   ),                  
                 const SizedBox(width: 15),
@@ -113,7 +113,7 @@ class _TvShowListRowWidget extends StatelessWidget {
                     children: [
                       const SizedBox(height: 20),
                       Text(
-                        show.title,
+                        person.name,
                         style: const TextStyle(
                             fontWeight: FontWeight.bold),
                         maxLines: 1,
@@ -121,14 +121,14 @@ class _TvShowListRowWidget extends StatelessWidget {
                       ),
                       const SizedBox(height: 5),
                       Text(
-                        show.firstAirDate,
+                        person.knownForDepartment,
                         style: const TextStyle(color: Colors.grey),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                       const SizedBox(height: 20),
                       Text(
-                        show.overview,
+                        person.popularity.toString(),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -151,3 +151,5 @@ class _TvShowListRowWidget extends StatelessWidget {
     );
   }
 }
+
+

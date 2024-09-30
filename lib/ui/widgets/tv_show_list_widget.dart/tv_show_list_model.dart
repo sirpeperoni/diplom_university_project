@@ -28,16 +28,17 @@ class TvShowViewModel extends ChangeNotifier{
   final _localStorage = LocalizedModelStorage();
   late final Paginator<TvShow> _popularTvShowPaginator;
   late final Paginator<TvShow> _searchTvShowPaginator;
+  Timer? searchDeboubce;
+
   var _shows = <TvShowListRowData>[];
   String? _searchQuery;
-  List<TvShowListRowData> get shows => List.unmodifiable(_shows);
-  late DateFormat _dateFormat;
-  Timer? searchDeboubce;
-  
   bool get isSearchMode{
     final searchQuery = _searchQuery;
     return searchQuery != null && searchQuery.isNotEmpty;
   }
+
+  List<TvShowListRowData> get shows => List.unmodifiable(_shows);
+  late DateFormat _dateFormat;
 
   TvShowViewModel(){
     _popularTvShowPaginator = Paginator<TvShow>((page) async {

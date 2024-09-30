@@ -11,6 +11,8 @@ import 'package:the_movie_db/ui/widgets/movie_list/movie_list_model.dart';
 import 'package:the_movie_db/ui/widgets/movie_list/movie_list_widget.dart';
 import 'package:the_movie_db/ui/widgets/movie_trailer/movie_trailer_widget.dart';
 import 'package:the_movie_db/ui/widgets/news/new_widget.dart';
+import 'package:the_movie_db/ui/widgets/people/people_list.dart';
+import 'package:the_movie_db/ui/widgets/people/people_list_view_model.dart';
 import 'package:the_movie_db/ui/widgets/tv_show_list_widget.dart/tv_show_list_model.dart';
 import 'package:the_movie_db/ui/widgets/tv_show_list_widget.dart/tv_show_list_widget.dart';
 
@@ -50,8 +52,11 @@ class ScreenFactory{
   }
 
   Widget makeMovieList(){
-    return ChangeNotifierProvider(
-      create: (_) => MovieListViewModel(),
+    return MultiProvider(
+      providers:[ 
+        ChangeNotifierProvider(create: (_) => MovieListViewModel(),),
+        ChangeNotifierProvider(create: (_) => TvShowViewModel(),)
+      ],
       child: const MovieListWidget()
     );
   }
@@ -60,6 +65,13 @@ class ScreenFactory{
     return ChangeNotifierProvider(
       create: (_) => TvShowViewModel(),
       child: const TWShowListWidget()
+    );
+  }
+
+  Widget makePeopleList(){
+    return ChangeNotifierProvider(
+      create: (_) => PeopleListViewModel(),
+      child: const PeopleListWidget()
     );
   }
 }

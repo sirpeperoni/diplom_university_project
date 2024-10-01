@@ -61,7 +61,7 @@ class _MainScreenWidgetState extends State<MainScreenWidget> {
           BottomNavigationBarItem(
             icon: Icon(Icons.people),
             label: "Люди"
-          )  
+          ), 
         ],
         onTap: onSelectTab,
       ),

@@ -1,5 +1,6 @@
 import 'package:the_movie_db/configuration/configuration.dart';
 import 'package:the_movie_db/domain/api_client/people_api_client.dart';
+import 'package:the_movie_db/domain/entity/people_details.dart';
 import 'package:the_movie_db/domain/entity/popular_people_response.dart';
 
 class PeopleService{
@@ -10,4 +11,7 @@ class PeopleService{
     
   Future<PopularPeopleResponse> searchPeople(int page, String locale, String query) async =>
     _peopleApiClient.searchPeople(page, locale, query, Configuration.apiKey);
+
+  Future<PeopleDetails> loadDetails({required int peopleId, required String locale}) async => 
+    _peopleApiClient.peopleDetails(peopleId, locale);
 }

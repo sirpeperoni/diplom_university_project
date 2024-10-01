@@ -6,6 +6,7 @@ import 'package:the_movie_db/domain/entity/popular_people_response.dart';
 import 'package:the_movie_db/domain/services/people_service.dart';
 import 'package:the_movie_db/library/Widgets/localized_model.dart';
 import 'package:the_movie_db/library/paginator.dart';
+import 'package:the_movie_db/ui/navigation/main_navigation.dart';
 
 class PeopleListRowData {
   final int id;
@@ -99,6 +100,14 @@ class PeopleListViewModel extends ChangeNotifier{
       await _searchPeoplePaginator.reset();
     }
     _loadNextPage();
+  }
+
+  void onMovieTap(BuildContext context, int index) {
+    final id = _people[index].id;
+    Navigator.of(context).pushNamed(
+      MainNavigationRoutesName.personsScreenDetails,
+      arguments: id,
+    );
   }
 
   void showedPeopleAtIndex(int index) {

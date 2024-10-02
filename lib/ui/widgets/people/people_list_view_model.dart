@@ -110,12 +110,7 @@ class PeopleListViewModel extends ChangeNotifier{
     );
   }
 
-  void onPersonTapInMovieDetails(BuildContext context, int id){
-    Navigator.of(context).pushNamed(
-      MainNavigationRoutesName.personsScreenDetails,
-      arguments: id,
-    );
-  }
+
 
   void showedPeopleAtIndex(int index) {
     if (index < _people.length - 1) return;

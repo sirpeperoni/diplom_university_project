@@ -194,6 +194,13 @@ class MovieDetailsModel extends ChangeNotifier{
     }
   }
 
+  void onPersonTapInMovieDetails(BuildContext context, int id){
+    Navigator.of(context).pushNamed(
+      MainNavigationRoutesName.personsScreenDetails,
+      arguments: id,
+    );
+  }
+
   void _handleApiClientException(ApiClientException exeption, BuildContext context){
       switch (exeption.type) {
         case ApiClientExceptionType.sessionExpired:

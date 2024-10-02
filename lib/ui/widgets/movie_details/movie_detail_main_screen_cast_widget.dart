@@ -75,7 +75,6 @@ class _ActorListItemWidget extends StatelessWidget {
     final actor = model.data.actorsData[actorIndex];
     final id = model.data.actorsData[actorIndex].id;
     final profilePath = actor.profilePath;
-    final peopleModel = context.read<PeopleListViewModel>();
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: DecoratedBox(
@@ -96,7 +95,7 @@ class _ActorListItemWidget extends StatelessWidget {
           clipBehavior: Clip.hardEdge,
           child: Material(
             child: InkWell(
-              onTap: () {peopleModel.onPersonTapInMovieDetails(context, id);},
+              onTap: () {model.onPersonTapInMovieDetails(context, id);},
               child: IgnorePointer(
                 child: Column(
                   children: [

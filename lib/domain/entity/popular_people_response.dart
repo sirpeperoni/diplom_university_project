@@ -1,6 +1,6 @@
 
 import 'package:json_annotation/json_annotation.dart';
-
+import 'package:the_movie_db/domain/entity/date_parser.dart';
 part 'popular_people_response.g.dart';
 
 @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
@@ -58,7 +58,7 @@ class KnownFor{
   final String? originalTitle;
   final String? overview;
   final String? posterPath;
-  @JsonKey(fromJson: _parseDateFromString)
+  @JsonKey(fromJson: parseDateFromString)
   final DateTime? releaseDate;
   final String? title;
   final bool? video;
@@ -76,8 +76,5 @@ class KnownFor{
   
   Map<String, dynamic> toJson() => _$KnownForToJson(this);
 
-  static DateTime? _parseDateFromString(String? rawDate) {
-    if (rawDate == null || rawDate.isEmpty) return null;
-    return DateTime.tryParse(rawDate);
-  }
+
 }

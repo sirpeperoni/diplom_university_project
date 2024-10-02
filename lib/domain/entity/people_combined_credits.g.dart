@@ -34,7 +34,7 @@ Actor _$ActorFromJson(Map<String, dynamic> json) => Actor(
       overview: json['overview'] as String,
       popularity: (json['popularity'] as num).toDouble(),
       posterPath: json['poster_path'] as String?,
-      releaseDate: Actor._parseDateFromString(json['release_date'] as String?),
+      releaseDate: parseDateFromString(json['release_date'] as String?),
       title: json['title'] as String?,
       video: json['video'] as bool?,
       voteAverage: (json['vote_average'] as num).toDouble(),
@@ -78,8 +78,7 @@ Employee _$EmployeeFromJson(Map<String, dynamic> json) => Employee(
       overview: json['overview'] as String,
       popularity: (json['popularity'] as num).toDouble(),
       posterPath: json['poster_path'] as String?,
-      releaseDate:
-          Employee._parseDateFromString(json['release_date'] as String?),
+      releaseDate: parseDateFromString(json['release_date'] as String?),
       title: json['title'] as String?,
       video: json['video'] as bool?,
       voteAverage: (json['vote_average'] as num).toDouble(),

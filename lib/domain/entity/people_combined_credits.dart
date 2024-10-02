@@ -1,6 +1,8 @@
 
 import 'package:json_annotation/json_annotation.dart';
+import 'package:the_movie_db/domain/entity/date_parser.dart';
 part 'people_combined_credits.g.dart';
+
 
 @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
 class CombinedCredits{
@@ -29,7 +31,7 @@ class Actor {
   final String overview;
   final double popularity;
   final String? posterPath;
-  @JsonKey(fromJson: _parseDateFromString)
+  @JsonKey(fromJson: parseDateFromString)
   final DateTime? releaseDate;
   final String? title;
   final bool? video;
@@ -48,10 +50,6 @@ class Actor {
   
   Map<String, dynamic> toJson() => _$ActorToJson(this);
 
-  static DateTime? _parseDateFromString(String? rawDate) {
-    if (rawDate == null || rawDate.isEmpty) return null;
-    return DateTime.tryParse(rawDate);
-  }
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
@@ -65,7 +63,7 @@ class Employee {
   final String overview;
   final double popularity;
   final String? posterPath;
-  @JsonKey(fromJson: _parseDateFromString)
+  @JsonKey(fromJson: parseDateFromString)
   final DateTime? releaseDate;
   final String? title;
   final bool? video;
@@ -82,10 +80,6 @@ class Employee {
 
   Employee({required this.adult, required this.backdropPath, required this.genreIds, required this.id, required this.originalLanguage, required this.originalTitle, required this.overview, required this.popularity, required this.posterPath, required this.releaseDate, required this.title, required this.video, required this.voteAverage, required this.voteCount, required this.creditId, required this.department, required this.mediaType, required this.job});
 
-  static DateTime? _parseDateFromString(String? rawDate) {
-    if (rawDate == null || rawDate.isEmpty) return null;
-    return DateTime.tryParse(rawDate);
-  }
 
   Map<String, dynamic> toJson() => _$EmployeeToJson(this);
 }

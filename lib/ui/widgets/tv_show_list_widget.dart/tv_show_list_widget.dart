@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:the_movie_db/domain/api_client/image_downloader.dart';
+import 'package:the_movie_db/ui/widgets/cache/cached_images.dart';
 import 'package:the_movie_db/ui/widgets/tv_show_list_widget.dart/tv_show_list_model.dart';
 
 
@@ -57,15 +57,18 @@ class _TvShowListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final model = context.watch<TvShowViewModel>();
-    return ListView.builder(
-      padding: const EdgeInsets.only(top: 70),
-      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-      itemCount: model.shows.length,
-      itemExtent: 163,
-      itemBuilder: (BuildContext context, int index) {
-        model.showedTvShowAtIndex(index);
-        return _TvShowListRowWidget(index: index,);
-      },
+    return RefreshIndicator(
+      onRefresh: () => model.resetList(),
+      child: ListView.builder(
+        padding: const EdgeInsets.only(top: 70),
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        itemCount: model.shows.length,
+        itemExtent: 163,
+        itemBuilder: (BuildContext context, int index) {
+          model.showedTvShowAtIndex(index);
+          return _TvShowListRowWidget(index: index,);
+        },
+      ),
     );
   }
 }
@@ -102,10 +105,7 @@ class _TvShowListRowWidget extends StatelessWidget {
             child: Row(
               children: [
                 if(posterPath != null)
-                  Image.network(
-                    ImageDownloader.imageUrl(posterPath),
-                    width: 95
-                  ),                  
+                  CacheImage(imagePath: posterPath, width: 95),              
                 const SizedBox(width: 15),
                 Expanded(
                   child: Column(
@@ -143,7 +143,9 @@ class _TvShowListRowWidget extends StatelessWidget {
             color: Colors.transparent,
             child: InkWell(
               borderRadius: BorderRadius.circular(10),
-              onTap: () {},
+              onTap: () {
+                model.onMovieTap(context, index);
+              },
             ),
           ),
         ],

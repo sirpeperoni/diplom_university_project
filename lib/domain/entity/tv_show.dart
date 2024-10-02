@@ -1,5 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
-
+import 'package:the_movie_db/domain/entity/date_parser.dart';
 
 part 'tv_show.g.dart';
 
@@ -7,7 +7,7 @@ part 'tv_show.g.dart';
 class TvShow{
   final String? backdropPath;
   final bool adult;
-  @JsonKey(fromJson: _parseDateFromString)
+  @JsonKey(fromJson: parseDateFromString)
   final DateTime? firstAirDate;
   final List<int> genreIds;
   final int id;
@@ -41,8 +41,5 @@ class TvShow{
 
   Map<String, dynamic> toJson() => _$TvShowToJson(this);
 
-  static DateTime? _parseDateFromString(String? rawDate) {
-    if (rawDate == null || rawDate.isEmpty) return null;
-    return DateTime.tryParse(rawDate);
-  }
+
 }

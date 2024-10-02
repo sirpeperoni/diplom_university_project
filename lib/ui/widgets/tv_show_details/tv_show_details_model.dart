@@ -3,127 +3,121 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:the_movie_db/domain/api_client/api_client_exception.dart';
-import 'package:the_movie_db/domain/entity/movie_details.dart';
+import 'package:the_movie_db/domain/entity/tv_show_details.dart';
 import 'package:the_movie_db/domain/services/auth_service.dart';
-import 'package:the_movie_db/domain/services/movie_service.dart';
+import 'package:the_movie_db/domain/services/tv_show_service.dart';
 import 'package:the_movie_db/library/Widgets/localized_model.dart';
 import 'package:the_movie_db/ui/navigation/main_navigation.dart';
 
-class MovieDetailsPosterData {
+
+class TvShowDetailsPosterData {
   final String? backdorPath;
   final String? posterPath;
-  final bool isFavorite;
-  IconData get favoriteIcon => isFavorite ? Icons.favorite : Icons.favorite_outline;
 
-   MovieDetailsPosterData({
+
+   TvShowDetailsPosterData({
     this.backdorPath,
     this.posterPath,
-    this.isFavorite = false,
   });
-   MovieDetailsPosterData copyWith({
+   TvShowDetailsPosterData copyWith({
     String? backdropPath,
     String? posterPath,
     bool? isFavorite,
   }) {
-    return MovieDetailsPosterData(
+    return TvShowDetailsPosterData(
       backdorPath: backdropPath ?? backdorPath,
       posterPath: posterPath ?? this.posterPath,
-      isFavorite: isFavorite ?? this.isFavorite,
     );
   }
 }
 
-class MovieDetailsMovieNameData{
-  final String name;
+class TvShowDetailsNameData{
+  final String? name;
   final String year;
 
-  MovieDetailsMovieNameData({required this.name, required this.year});
+  TvShowDetailsNameData({required this.name, required this.year});
 }
 
-class MovieDetailsMovieScoreData{
+class TvShowDetailsScoreData{
   final double voteAverage;
   final String? trailerKey;
 
-  MovieDetailsMovieScoreData({required this.voteAverage, this.trailerKey});
+  TvShowDetailsScoreData({required this.voteAverage, this.trailerKey});
 }
 
-class MovieDetailsMoviePeopleData{
+class TvShowDetailsPeopleData{
   final String name;
   final String job;
 
-  MovieDetailsMoviePeopleData({required this.name, required this.job});
+  TvShowDetailsPeopleData({required this.name, required this.job});
 }
 
-class MovieDetailsMovieActorData{
+class TvShowDetailsActorData{
   final String name;
   final String character;
   final String? profilePath;
   final int id;
-  MovieDetailsMovieActorData({required this.name, required this.character, this.profilePath, required this.id});
+  TvShowDetailsActorData({required this.name, required this.character, this.profilePath, required this.id});
 
 }
 
-class MovieDetailsData {
-  String title = "";
+class TvShowDetailsData {
+  String name = "";
   bool isLoading = true;
   String overview = "";
-  MovieDetailsPosterData posterData = MovieDetailsPosterData();
-  MovieDetailsMovieNameData nameData = MovieDetailsMovieNameData(name: '', year: '');
-  MovieDetailsMovieScoreData scoreData = MovieDetailsMovieScoreData(voteAverage: 0);
+  TvShowDetailsPosterData posterData = TvShowDetailsPosterData();
+  TvShowDetailsNameData nameData = TvShowDetailsNameData(name: '', year: '');
+  TvShowDetailsScoreData scoreData = TvShowDetailsScoreData(voteAverage: 0);
   String summary = '';
-  List<List<MovieDetailsMoviePeopleData>> peopleData = const <List<MovieDetailsMoviePeopleData>>[];
-  List<MovieDetailsMovieActorData> actorsData = const <MovieDetailsMovieActorData>[];
+  List<List<TvShowDetailsPeopleData>> peopleData = const <List<TvShowDetailsPeopleData>>[];
+  List<TvShowDetailsActorData> actorsData = const <TvShowDetailsActorData>[];
 }
 
 
 
-class MovieDetailsModel extends ChangeNotifier{
-  final _movieService = MovieService();
+class TvShowDetailsModel extends ChangeNotifier{
+  final _tvShowService = TvShowService();
   final _authService = AuthService();  
-  final int movieId;
-  final data = MovieDetailsData();
+  final int seriesId;
+  final data = TvShowDetailsData();
   final _localeStorage = LocalizedModelStorage();
   late DateFormat _dateFormat;
   Future<void>? Function()? onSessionExpired;
 
 
-  MovieDetailsModel(this.movieId);
+  TvShowDetailsModel(this.seriesId);
 
   Future<void> setupLocale(BuildContext context, Locale locale) async {
     if(!_localeStorage.updateLocale(locale)) return;
     _dateFormat = DateFormat.yMMMMd(_localeStorage.localeTag);
-    updateData(null, false);
+    updateData(null);
     await loadDetails(context);
   }
 
-
-
-
-  void updateData(MovieDetails? details,bool isFavorite){
-    data.title = details?.title ?? "Загрузка...";
+  void updateData(TvShowDetails? details){
+    data.name = details?.name ?? "Загрузка...";
     data.isLoading = details == null;
     if(details == null){
       notifyListeners();
       return;
     }
-    data.overview = details.overview ?? '';
+    data.overview = details.overview;
 
-    data.posterData = MovieDetailsPosterData(
+    data.posterData = TvShowDetailsPosterData(
       posterPath: details.posterPath, 
       backdorPath: details.backdropPath, 
-      isFavorite: isFavorite
     );
-    var year = details.releaseDate?.year.toString();
+    var year = details.firstAirDate?.year.toString();
     year = year != null ? ' ($year)' : '';
-    data.nameData = MovieDetailsMovieNameData(name: details.title, year: year);
+    data.nameData = TvShowDetailsNameData(name: details.name, year: year);
     final videos = details.videos.results
         .where((video) => video.type == 'Trailer' && video.site == 'YouTube');
     final trailerKey = videos.isNotEmpty == true ? videos.first.key : null;
-    data.scoreData = MovieDetailsMovieScoreData(voteAverage: details.voteAverage * 10, trailerKey: trailerKey);
+    data.scoreData = TvShowDetailsScoreData(voteAverage: details.voteAverage * 10, trailerKey: trailerKey);
     data.summary = makeSummary(details);
     data.peopleData = makePeopleData(details);
     data.actorsData = details.credits.cast.map(
-      (e) => MovieDetailsMovieActorData(
+      (e) => TvShowDetailsActorData(
         name: e.name, 
         character: e.character, 
         profilePath: e.profilePath,
@@ -132,8 +126,8 @@ class MovieDetailsModel extends ChangeNotifier{
     notifyListeners();
   }
 
-  String makeSummary(MovieDetails details){
-    final releaseDate = details.releaseDate;
+  String makeSummary(TvShowDetails details){
+    final releaseDate = details.firstAirDate;
     var texts = <String>[];
     
     if(releaseDate != null ){
@@ -142,11 +136,15 @@ class MovieDetailsModel extends ChangeNotifier{
     if(details.productionCompanies.isNotEmpty){
       texts.add('(${details.productionCompanies.first.originCountry})');
     }
-    final runtime = details.runtime ?? 0;
-    final duration = Duration(minutes: runtime);
-    final hours = duration.inHours;
-    final minutes = duration.inMinutes.remainder(60);
-    texts.add('${hours}h ${minutes}m');
+    dynamic seasons = details.seasons.length;
+    if(seasons == 1){
+      seasons = "$seasons сезон";
+    } else if(seasons < 5){
+      seasons = "$seasons сезона";
+    } else {
+      seasons = "$seasons сезонов";
+    }
+    texts.add(seasons);
     if(details.genres.isNotEmpty){
       var genresNames = <String>[];
       for(var genre in details.genres){
@@ -157,12 +155,12 @@ class MovieDetailsModel extends ChangeNotifier{
     return texts.join(' ');
   }
 
-  List<List<MovieDetailsMoviePeopleData>> makePeopleData(MovieDetails details){
+  List<List<TvShowDetailsPeopleData>> makePeopleData(TvShowDetails details){
     var crew = details.credits.crew
-        .map((e) => MovieDetailsMoviePeopleData(name: e.name, job: e.job))
+        .map((e) => TvShowDetailsPeopleData(name: e.name, job: e.job))
         .toList();
     crew = crew.length > 4 ? crew.sublist(0, 4) : crew;
-    var crewChunks = <List<MovieDetailsMoviePeopleData>>[];
+    var crewChunks = <List<TvShowDetailsPeopleData>>[];
     for(var i = 0; i < crew.length; i+=2){
       crewChunks.add(
         crew.sublist(i, i+2 > crew.length ? crew.length : i + 2)
@@ -173,30 +171,16 @@ class MovieDetailsModel extends ChangeNotifier{
 
   Future<void> loadDetails(BuildContext context) async {
     try{
-      final details = await _movieService.loadDetails(locale: _localeStorage.localeTag, movieId: movieId);
-      updateData(details.details, details.isFavorite);
+      final details = await _tvShowService.loadDetails(locale: _localeStorage.localeTag, seriesId: seriesId);
+      updateData(details);
     } on ApiClientException catch(e) {
       // ignore: use_build_context_synchronously
       _handleApiClientException(e, context);
     }
   }
 
-  Future<void> toggleFavorite(BuildContext context) async {
-    
-    data.posterData = data.posterData.copyWith(isFavorite: !data.posterData.isFavorite);
-    notifyListeners();
-    try{
-      await _movieService.updateFavorite(
-        isFavorite: data.posterData.isFavorite, 
-        movieId: movieId
-      );
-    } on ApiClientException catch(e) {
-      // ignore: use_build_context_synchronously
-      _handleApiClientException(e, context);
-    }
-  }
 
-  void onPersonTapInMovieDetails(BuildContext context, int id){
+  void onPersonTapInTvShowDetails(BuildContext context, int id){
     Navigator.of(context).pushNamed(
       MainNavigationRoutesName.personsScreenDetails,
       arguments: id,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:the_movie_db/domain/api_client/image_downloader.dart';
+import 'package:the_movie_db/ui/widgets/cache/cached_images.dart';
 import 'package:the_movie_db/ui/widgets/movie_list/movie_list_model.dart';
 
 
@@ -58,15 +58,18 @@ class _MovieListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final model = context.watch<MovieListViewModel>();
-    return ListView.builder(
-      padding: const EdgeInsets.only(top: 70),
-      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-      itemCount: model.movies.length,
-      itemExtent: 163,
-      itemBuilder: (BuildContext context, int index) {
-        model.showedMovieAtIndex(index);
-        return _MovieListRowWidget(index: index);
-      },
+    return RefreshIndicator(
+      onRefresh: () => model.resetList(),
+      child: ListView.builder(
+        padding: const EdgeInsets.only(top: 70),
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        itemCount: model.movies.length,
+        itemExtent: 163,
+        itemBuilder: (BuildContext context, int index) {
+          model.showedMovieAtIndex(index);
+          return _MovieListRowWidget(index: index);
+        },
+      ),
     );
   }
 }
@@ -103,10 +106,7 @@ class _MovieListRowWidget extends StatelessWidget {
             child: Row(
               children: [
                 if(posterPath != null)
-                  Image.network(
-                    ImageDownloader.imageUrl(posterPath),
-                    width: 95
-                  ),                  
+                  CacheImage(imagePath: posterPath, width: 95),             
                 const SizedBox(width: 15),
                 Expanded(
                   child: Column(

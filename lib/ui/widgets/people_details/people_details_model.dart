@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:the_movie_db/domain/api_client/api_client_exception.dart';
 import 'package:the_movie_db/domain/entity/people_details.dart';
 import 'package:the_movie_db/domain/services/auth_service.dart';
@@ -27,7 +26,6 @@ class PeopleDetailsViewModel extends ChangeNotifier{
   final data = PeopleDetailsData();
   final _localeStorage = LocalizedModelStorage();
   final _authService = AuthService(); 
-  late DateFormat _dateFormat;
   final int peopleId;
 
   PeopleDetailsViewModel(this.peopleId);
@@ -47,8 +45,8 @@ class PeopleDetailsViewModel extends ChangeNotifier{
     }
     data.biography = details.biography ?? "";
     data.profilePath = details.profilePath;
-    data.knownForDepartment = details.knownForDepartment ?? "";
-    data.gender = details.gender ?? 0;
+    data.knownForDepartment = details.knownForDepartment;
+    data.gender = details.gender;
     data.birthday = details.birthday.toString();
     data.deathhday = details.deathhday.toString();
     data.placeOfBirth = details.placeOfBirth;
@@ -61,6 +59,7 @@ class PeopleDetailsViewModel extends ChangeNotifier{
       final details = await _peopleService.loadDetails(locale: _localeStorage.localeTag, peopleId: peopleId);
       updateData(details);
     } on ApiClientException catch(e) {
+      // ignore: use_build_context_synchronously
       _handleApiClientException(e, context);
     }
   }

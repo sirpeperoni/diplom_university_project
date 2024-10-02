@@ -70,8 +70,7 @@ KnownFor _$KnownForFromJson(Map<String, dynamic> json) => KnownFor(
       originalTitle: json['original_title'] as String?,
       overview: json['overview'] as String?,
       posterPath: json['poster_path'] as String?,
-      releaseDate:
-          KnownFor._parseDateFromString(json['release_date'] as String?),
+      releaseDate: parseDateFromString(json['release_date'] as String?),
       title: json['title'] as String?,
       video: json['video'] as bool?,
       voteAverage: (json['vote_average'] as num?)?.toDouble(),

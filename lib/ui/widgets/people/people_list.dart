@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:the_movie_db/domain/api_client/image_downloader.dart';
+import 'package:the_movie_db/ui/widgets/cache/cached_images.dart';
 import 'package:the_movie_db/ui/widgets/people/people_list_view_model.dart';
 
 
@@ -57,15 +57,18 @@ class _PeopleListWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final model = context.watch<PeopleListViewModel>();
-    return ListView.builder(
-      padding: const EdgeInsets.only(top: 70),
-      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-      itemCount: model.people.length,
-      itemExtent: 163,
-      itemBuilder: (BuildContext context, int index) {
-        model.showedPeopleAtIndex(index);
-        return _PeopleListRowWidget(index: index);
-      },
+    return RefreshIndicator(
+      onRefresh: () => model.resetList(),
+      child: ListView.builder(
+        padding: const EdgeInsets.only(top: 70),
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        itemCount: model.people.length,
+        itemExtent: 163,
+        itemBuilder: (BuildContext context, int index) {
+          model.showedPeopleAtIndex(index);
+          return _PeopleListRowWidget(index: index);
+        },
+      ),
     );
   }
 }
@@ -101,11 +104,7 @@ class _PeopleListRowWidget extends StatelessWidget {
             clipBehavior: Clip.hardEdge,
             child: Row(
               children: [
-                if(profilePath != null)
-                  Image.network(
-                    ImageDownloader.imageUrl(profilePath),
-                    width: 95
-                  ),                  
+                CacheImage(imagePath: profilePath, width: 95),             
                 const SizedBox(width: 15),
                 Expanded(
                   child: Column(

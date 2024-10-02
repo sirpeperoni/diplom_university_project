@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:the_movie_db/ui/widgets/cache/cached_images.dart';
-import 'package:the_movie_db/ui/widgets/movie_details/movie_details_model.dart';
+import 'package:the_movie_db/ui/widgets/tv_show_details/tv_show_details_model.dart';
 
 
-class MovieDetailsMainScreenCastWidget extends StatelessWidget {
+class TvShowDetailsMainScreenCastWidget extends StatelessWidget {
   // ignore: use_super_parameters
-  const MovieDetailsMainScreenCastWidget({Key? key}) : super(key: key);
+  const TvShowDetailsMainScreenCastWidget({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +49,7 @@ class _ActorListWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var data = context.select((MovieDetailsModel model) => model.data.actorsData);
+    var data = context.select((TvShowDetailsModel model) => model.data.actorsData);
     if (data.isEmpty) return const SizedBox.shrink();
     return ListView.builder(
       itemCount: data.length,
@@ -70,7 +70,7 @@ class _ActorListItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = context.read<MovieDetailsModel>();
+    final model = context.read<TvShowDetailsModel>();
     final actor = model.data.actorsData[actorIndex];
     final id = model.data.actorsData[actorIndex].id;
     final profilePath = actor.profilePath;
@@ -94,7 +94,7 @@ class _ActorListItemWidget extends StatelessWidget {
           clipBehavior: Clip.hardEdge,
           child: Material(
             child: InkWell(
-              onTap: () {model.onPersonTapInMovieDetails(context, id);},
+              onTap: () {model.onPersonTapInTvShowDetails(context, id);},
               child: IgnorePointer(
                 child: Column(
                   children: [

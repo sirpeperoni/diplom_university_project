@@ -4,10 +4,10 @@ import 'package:provider/provider.dart';
 import 'package:the_movie_db/ui/navigation/main_navigation.dart';
 import 'package:the_movie_db/ui/widgets/cache/cached_images.dart';
 import 'package:the_movie_db/ui/widgets/elements/radial_percent_widget.dart';
-import 'package:the_movie_db/ui/widgets/movie_details/movie_details_model.dart';
+import 'package:the_movie_db/ui/widgets/tv_show_details/tv_show_details_model.dart';
 
-class MovieDetailsMainInfoWidget extends StatelessWidget {
-  const MovieDetailsMainInfoWidget({super.key});
+class TvShowDetailsMainInfoWidget extends StatelessWidget {
+  const TvShowDetailsMainInfoWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,7 @@ class MovieDetailsMainInfoWidget extends StatelessWidget {
         _TopPosterWidget(),
         Padding(
           padding: EdgeInsets.symmetric(vertical: 20, horizontal: 40),
-          child: _MovieNameWidget(),
+          child: _TvShowNameWidget(),
         ),
         _ScoreWidget(),
         _SummeryWidget(),
@@ -42,7 +42,7 @@ class _DescriptionWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final overview = context.select((MovieDetailsModel model) => model.data.overview);
+    final overview = context.select((TvShowDetailsModel model) => model.data.overview);
     return Text(
       overview,
       style: const TextStyle(
@@ -75,8 +75,8 @@ class _TopPosterWidget extends StatelessWidget {
   const _TopPosterWidget();
   @override
   Widget build(BuildContext context) {
-    final model = context.read<MovieDetailsModel>();
-    final posterData = context.select((MovieDetailsModel model) => model.data.posterData);
+    final model = context.read<TvShowDetailsModel>();
+    final posterData = context.select((TvShowDetailsModel model) => model.data.posterData);
     final backdorPath = posterData.backdorPath;
     final posterPath = posterData.posterPath;
     return AspectRatio(
@@ -92,11 +92,6 @@ class _TopPosterWidget extends StatelessWidget {
               bottom: 20,
               child: CacheImage(imagePath: posterPath, width: 95)
             ),
-          Positioned(
-            top: 5,
-            right: 5,
-            child: IconButton(icon: Icon(posterData.favoriteIcon), onPressed: () => model.toggleFavorite(context),)
-          )
         ],
       ),
     );
@@ -104,12 +99,12 @@ class _TopPosterWidget extends StatelessWidget {
 }
 
 
-class _MovieNameWidget extends StatelessWidget {
-  const _MovieNameWidget();
+class _TvShowNameWidget extends StatelessWidget {
+  const _TvShowNameWidget();
 
   @override
   Widget build(BuildContext context) {
-    final data = context.select((MovieDetailsModel model) => model.data.nameData);
+    final data = context.select((TvShowDetailsModel model) => model.data.nameData);
   
     return Center(
       child: RichText(
@@ -143,7 +138,7 @@ class _ScoreWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scoreData = context.select((MovieDetailsModel model) => model.data.scoreData);
+    final scoreData = context.select((TvShowDetailsModel model) => model.data.scoreData);
     final trailerKey = scoreData.trailerKey;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -195,7 +190,7 @@ class _SummeryWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final summary = context.select((MovieDetailsModel model) => model.data.summary);
+    final summary = context.select((TvShowDetailsModel model) => model.data.summary);
 
     return ColoredBox(
       color: const Color.fromRGBO(22, 21, 25, 1.0),
@@ -223,7 +218,7 @@ class _PeopleWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var crew = context.select((MovieDetailsModel model) => model.data.peopleData);
+    var crew = context.select((TvShowDetailsModel model) => model.data.peopleData);
     if(crew.isEmpty) return const SizedBox.shrink();
 
 
@@ -242,7 +237,7 @@ class _PeopleWidget extends StatelessWidget {
 
 class _PeopleWidgetRow extends StatelessWidget {
   const _PeopleWidgetRow({required this.employees});
-  final List<MovieDetailsMoviePeopleData> employees;
+  final List<TvShowDetailsPeopleData> employees;
   @override
   Widget build(BuildContext context) {
 
@@ -257,7 +252,7 @@ class _PeopleWidgetRow extends StatelessWidget {
 }
 
 class _PeopleWidgetRowItem extends StatelessWidget {
-  final MovieDetailsMoviePeopleData employee;
+  final TvShowDetailsPeopleData employee;
   const _PeopleWidgetRowItem({required this.employee});
   
   @override

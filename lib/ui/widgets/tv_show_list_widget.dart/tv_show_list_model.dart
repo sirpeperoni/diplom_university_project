@@ -6,6 +6,7 @@ import 'package:the_movie_db/domain/entity/tv_show.dart';
 import 'package:the_movie_db/domain/services/tv_show_service.dart';
 import 'package:the_movie_db/library/Widgets/localized_model.dart';
 import 'package:the_movie_db/library/paginator.dart';
+import 'package:the_movie_db/ui/navigation/main_navigation.dart';
 
 class TvShowListRowData {
   final int id;
@@ -54,10 +55,10 @@ class TvShowViewModel extends ChangeNotifier{
   Future<void> setupLocale(Locale locale) async {
     if(!_localStorage.updateLocale(locale)) return;
     _dateFormat = DateFormat.yMMMMd(_localStorage.localeTag);
-    await _resetList();
+    await resetList();
   }
 
-  Future<void> _resetList() async {
+  Future<void> resetList() async {
     await _popularTvShowPaginator.reset();
     await _searchTvShowPaginator.reset();
     _shows.clear();
@@ -81,13 +82,13 @@ class TvShowViewModel extends ChangeNotifier{
     return TvShowListRowData(id: movie.id, posterPath: movie.posterPath, title: movie.name, firstAirDate: releaseDateTitle, overview: movie.overview);
   }
 
-  // void onMovieTap(BuildContext context, int index) {
-  //   final id = _movies[index].id;
-  //   Navigator.of(context).pushNamed(
-  //     MainNavigationRoutesName.movieDetails,
-  //     arguments: id,
-  //   );
-  // }
+  void onMovieTap(BuildContext context, int index) {
+    final id = _shows[index].id;
+    Navigator.of(context).pushNamed(
+      MainNavigationRoutesName.tvShowScreenDetails,
+      arguments: id,
+    );
+  }
 
   Future<void> serachTvShow(String text) async {
     searchDeboubce?.cancel();

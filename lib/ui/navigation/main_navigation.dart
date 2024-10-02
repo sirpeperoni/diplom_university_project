@@ -11,6 +11,7 @@ abstract class MainNavigationRoutesName{
   static const movieDetails = '/main_screen/movie_details';
   static const movieTrailerWidget = '/main_screen/movie_details/trailer';
   static const personsScreenDetails = '/persons_screen/person_details';
+  static const tvShowScreenDetails = '/tv_show_screen/tv_show_details';
 }
 
 
@@ -48,6 +49,12 @@ class MainNavigation{
         return MaterialPageRoute(
           builder: (_) => _screenFactory.makePersonDetails(personId)
         );
+      case MainNavigationRoutesName.tvShowScreenDetails:
+        final arguments = settings.arguments;
+        final personId = arguments is int ? arguments : 0;
+        return MaterialPageRoute(
+          builder: (_) => _screenFactory.makeTvShowDetails(personId)
+      );
       default:
         const widget = Text("Navigation error!!!");
         return MaterialPageRoute(builder: (context) => widget);

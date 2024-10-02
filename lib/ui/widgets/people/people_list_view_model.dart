@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:the_movie_db/domain/entity/popular_people_response.dart';
 import 'package:the_movie_db/domain/services/people_service.dart';
 import 'package:the_movie_db/library/Widgets/localized_model.dart';
@@ -40,7 +39,6 @@ class PeopleListViewModel extends ChangeNotifier{
 
 
   List<PeopleListRowData> get people => List.unmodifiable(_people);
-  late DateFormat _dateFormat;
 
   PeopleListViewModel(){
     _popularPeoplePaginator = Paginator<ActorInList>((page) async {
@@ -55,11 +53,10 @@ class PeopleListViewModel extends ChangeNotifier{
 
   Future<void> setupLocale(Locale locale) async {
     if(!_localStorage.updateLocale(locale)) return;
-    _dateFormat = DateFormat.yMMMMd(_localStorage.localeTag);
-    await _resetList();
+    await resetList();
   }
 
-  Future<void> _resetList() async {
+  Future<void> resetList() async {
     await _popularPeoplePaginator.reset();
     await _searchPeoplePaginator.reset();
     _people.clear();

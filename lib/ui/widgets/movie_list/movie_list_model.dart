@@ -57,10 +57,10 @@ class MovieListViewModel extends ChangeNotifier {
   Future<void> setupLocale(Locale locale) async {
     if(!_localStorage.updateLocale(locale)) return;
     _dateFormat = DateFormat.yMMMMd(_localStorage.localeTag);
-    await _resetList();
+    await resetList();
   }
 
-  Future<void> _resetList() async {
+  Future<void> resetList() async {
     await _popularMoviePaginator.reset();
     await _searchMoviePaginator.reset();
     _movies.clear();

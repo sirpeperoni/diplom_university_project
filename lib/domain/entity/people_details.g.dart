@@ -13,9 +13,8 @@ PeopleDetails _$PeopleDetailsFromJson(Map<String, dynamic> json) =>
           .map((e) => e as String)
           .toList(),
       biography: json['biography'] as String?,
-      birthday: PeopleDetails._parseDateFromString(json['birthday'] as String?),
-      deathhday:
-          PeopleDetails._parseDateFromString(json['deathhday'] as String?),
+      birthday: parseDateFromString(json['birthday'] as String?),
+      deathhday: parseDateFromString(json['deathhday'] as String?),
       gender: (json['gender'] as num).toInt(),
       homepage: json['homepage'] as String?,
       id: (json['id'] as num).toInt(),

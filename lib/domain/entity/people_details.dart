@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:the_movie_db/domain/entity/people_combined_credits.dart';
-
+import 'package:the_movie_db/domain/entity/date_parser.dart';
 
 part 'people_details.g.dart';
 
@@ -9,9 +9,9 @@ class PeopleDetails{
   final bool adult;
   final List<String> alsoKnownAs;
   final String? biography;
-  @JsonKey(fromJson: _parseDateFromString)
+  @JsonKey(fromJson: parseDateFromString)
   final DateTime? birthday;
-  @JsonKey(fromJson: _parseDateFromString)
+  @JsonKey(fromJson: parseDateFromString)
   final DateTime? deathhday;
   final int gender;
   final String? homepage;
@@ -48,8 +48,4 @@ class PeopleDetails{
  
   Map<String, dynamic> toJson() => _$PeopleDetailsToJson(this);
 
-  static DateTime? _parseDateFromString(String? rawDate) {
-    if (rawDate == null || rawDate.isEmpty) return null;
-    return DateTime.tryParse(rawDate);
-  }
 }

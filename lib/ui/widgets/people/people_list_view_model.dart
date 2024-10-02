@@ -102,8 +102,15 @@ class PeopleListViewModel extends ChangeNotifier{
     _loadNextPage();
   }
 
-  void onMovieTap(BuildContext context, int index) {
+  void onPersonTap(BuildContext context, int index) {
     final id = _people[index].id;
+    Navigator.of(context).pushNamed(
+      MainNavigationRoutesName.personsScreenDetails,
+      arguments: id,
+    );
+  }
+
+  void onPersonTapInMovieDetails(BuildContext context, int id){
     Navigator.of(context).pushNamed(
       MainNavigationRoutesName.personsScreenDetails,
       arguments: id,

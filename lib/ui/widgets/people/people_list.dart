@@ -143,7 +143,7 @@ class _PeopleListRowWidget extends StatelessWidget {
             color: Colors.transparent,
             child: InkWell(
               borderRadius: BorderRadius.circular(10),
-              onTap: () => model.onMovieTap(context, index),
+              onTap: () => model.onPersonTap(context, index),
             ),
           ),
         ],

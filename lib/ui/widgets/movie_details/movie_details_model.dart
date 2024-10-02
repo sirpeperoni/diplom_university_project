@@ -58,8 +58,8 @@ class MovieDetailsMovieActorData{
   final String name;
   final String character;
   final String? profilePath;
-
-  MovieDetailsMovieActorData({required this.name, required this.character, this.profilePath});
+  final int id;
+  MovieDetailsMovieActorData({required this.name, required this.character, this.profilePath, required this.id});
 
 }
 
@@ -126,7 +126,8 @@ class MovieDetailsModel extends ChangeNotifier{
       (e) => MovieDetailsMovieActorData(
         name: e.name, 
         character: e.character, 
-        profilePath: e.profilePath
+        profilePath: e.profilePath,
+        id: e.id
     )).toList();
     notifyListeners();
   }

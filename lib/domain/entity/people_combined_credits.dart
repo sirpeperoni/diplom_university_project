@@ -61,13 +61,13 @@ class Employee {
   final List<int> genreIds;
   final int id;
   final String originalLanguage;
-  final String originalTitle;
+  final String? originalTitle;
   final String overview;
   final double popularity;
   final String? posterPath;
   @JsonKey(fromJson: _parseDateFromString)
   final DateTime? releaseDate;
-  final String title;
+  final String? title;
   final bool? video;
   final double voteAverage;
   final double voteCount;

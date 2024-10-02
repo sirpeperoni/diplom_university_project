@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:the_movie_db/domain/api_client/image_downloader.dart';
 import 'package:the_movie_db/ui/widgets/movie_details/movie_details_model.dart';
+import 'package:the_movie_db/ui/widgets/people/people_list_view_model.dart';
+import 'package:the_movie_db/ui/widgets/people_details/people_details_model.dart';
 
 class MovieDetailsMainScreenCastWidget extends StatelessWidget {
   // ignore: use_super_parameters
@@ -71,8 +73,9 @@ class _ActorListItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final model = context.read<MovieDetailsModel>();
     final actor = model.data.actorsData[actorIndex];
+    final id = model.data.actorsData[actorIndex].id;
     final profilePath = actor.profilePath;
-
+    final peopleModel = context.read<PeopleListViewModel>();
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: DecoratedBox(
@@ -91,36 +94,43 @@ class _ActorListItemWidget extends StatelessWidget {
         child: ClipRRect(
           borderRadius: const BorderRadius.all(Radius.circular(8)),
           clipBehavior: Clip.hardEdge,
-          child: Column(
-            children: [
-              if(profilePath != null)
-                Image.network(
-                  ImageDownloader.imageUrl(profilePath),
-                  width: 150,
-                  height: 120,
-                  fit: BoxFit.fitWidth,
-                ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        actor.name,
-                        maxLines: 2,
-                        style: const TextStyle(fontSize: 14),
+          child: Material(
+            child: InkWell(
+              onTap: () {peopleModel.onPersonTapInMovieDetails(context, id);},
+              child: IgnorePointer(
+                child: Column(
+                  children: [
+                    if(profilePath != null)
+                      Image.network(
+                        ImageDownloader.imageUrl(profilePath),
+                        width: 150,
+                        height: 120,
+                        fit: BoxFit.fitWidth,
                       ),
-                      const SizedBox(height: 7),
-                      Text(
-                        actor.character,
-                        maxLines: 3,
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              actor.name,
+                              maxLines: 2,
+                              style: const TextStyle(fontSize: 14),
+                            ),
+                            const SizedBox(height: 7),
+                            Text(
+                              actor.character,
+                              maxLines: 3,
+                            ),
+                          ],
+                        ),
                       ),
-                    ],
-                  ),
+                    )
+                  ],
                 ),
-              )
-            ],
+              ),
+            ),
           ),
         ),
       ),

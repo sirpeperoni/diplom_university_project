@@ -39,10 +39,13 @@ class ScreenFactory{
   }
 
   Widget makeMovieDetails(int movieId){
-    return ChangeNotifierProvider(
-            create:(_) => MovieDetailsModel(movieId),
-            child: const MovieDetailsWidget(),
-          );
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create:(_) => MovieDetailsModel(movieId),),
+        ChangeNotifierProvider(create: (_) => PeopleListViewModel())
+      ],
+      child: const MovieDetailsWidget(),
+    );
   }
 
   Widget makePersonDetails(int peopleId){

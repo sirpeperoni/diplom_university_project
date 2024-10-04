@@ -75,5 +75,26 @@ class AccountApiClient{
     return result;  
   }
 
+  Future<String> markAsWatchlist({
+    required int accountId, 
+    required String sessionId,
+    required MediaType mediaType,
+    required int mediaId,
+    required bool isWatchlist,
+  }) async {
+    parser(dynamic json) {
+      final jsonMap = json as Map<String, dynamic>;
+      final token = jsonMap['request_token'] as String;
+      return token;
+    }
+    final parameters = <String, dynamic>{
+        'media_type': mediaType.asString(),
+        'media_id': mediaId,
+        'watchlist': isWatchlist,
+      };
+    final result = _networkClient.post('/account/$accountId/watchlist', parameters, parser, <String, dynamic>{'api_key': Configuration.apiKey, 'session_id': sessionId});
+    return result;  
+  }
+
 
 }

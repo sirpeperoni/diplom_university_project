@@ -2,6 +2,7 @@
 import 'dart:ffi';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 import 'package:provider/provider.dart';
 import 'package:the_movie_db/ui/navigation/main_navigation.dart';
@@ -26,43 +27,46 @@ class MovieDetailsMainInfoWidget extends StatelessWidget {
           child: _MovieNameWidget(),
         ),
         const _ScoreWidget(),
-        Center(
-          child: RatingStars(
-            value: rating,
-            onValueChanged: (v) {
-              model.addRating(model.movieId, v, context);
-            },
-            starBuilder: (index, color) => Icon(
-              Icons.star,
-              color: color,
-            ),
-            starCount: 10,
-            starSize: 20,
-            valueLabelRadius: 10,
-            maxValue: 10,
-            starSpacing: 2,
-            maxValueVisibility: false,
-            valueLabelVisibility: false,
-            valueLabelPadding:
-            const EdgeInsets.symmetric(vertical: 1, horizontal: 8),
-            valueLabelMargin: const EdgeInsets.only(right: 8),
-            starOffColor: const Color(0xffe7e8ea),
-            starColor: Colors.yellow,
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children:[
+            IconButton(onPressed: () => model.deleteRating(model.movieId, context), icon: const Icon(Icons.remove)),
+            RatingStars(
+              value: rating,
+              onValueChanged: (v) {
+                model.addRating(model.movieId, v, context);
+              },
+              starBuilder: (index, color) => Icon(
+                Icons.star,
+                color: color,
+              ),
+              starCount: 10,
+              starSize: 20,
+              valueLabelRadius: 10,
+              maxValue: 10,
+              starSpacing: 2,
+              maxValueVisibility: false,
+              valueLabelVisibility: false,
+              valueLabelPadding:
+              const EdgeInsets.symmetric(vertical: 1, horizontal: 8),
+              valueLabelMargin: const EdgeInsets.only(right: 8),
+              starOffColor: const Color(0xffe7e8ea),
+              starColor: Colors.yellow,
+            ),      
+          ]
         ),
-        SizedBox(height: 5,),
-        _SummeryWidget(),
-        Padding(
+        const SizedBox(height: 5,),
+        const _SummeryWidget(),
+        const Padding(
           padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
           child: _OverviewWidget(),
         ),
-        Padding(
+        const Padding(
           padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
           child: _DescriptionWidget(),
         ),
-        SizedBox(height: 30,),
-        _PeopleWidget(),
-
+        const SizedBox(height: 30,),
+        const _PeopleWidget(),
       ],
     );
   }
@@ -128,6 +132,11 @@ class _TopPosterWidget extends StatelessWidget {
             top: 5,
             right: 5,
             child: IconButton(icon: Icon(posterData.favoriteIcon), onPressed: () => model.toggleFavorite(context),)
+          ),
+          Positioned(
+            top: 40,
+            right: 5,
+            child: IconButton(icon: Icon(posterData.watchlistIcon), onPressed: () => model.toggleWatchlist(context),)
           ),
         ],
       ),

@@ -66,6 +66,17 @@ class NetworkClient {
     }
   }
 
+  Future<void> delete<T>(    
+    String path,
+    [
+      Map<String, dynamic>? parameters,
+    ]
+  ) async {
+    final url = _makeUri(path, parameters);
+    final request = await _client.deleteUrl(url);
+    await request.close();
+  } 
+
   void _validateResponse(HttpClientResponse response, dynamic json) {
     if (response.statusCode == 401) {
       final dynamic status = json['status_code'];

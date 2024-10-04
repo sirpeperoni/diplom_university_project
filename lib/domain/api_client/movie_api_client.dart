@@ -1,4 +1,3 @@
-
 import 'package:the_movie_db/configuration/configuration.dart';
 import 'package:the_movie_db/domain/api_client/network_client.dart';
 import 'package:the_movie_db/domain/entity/movie_details.dart';
@@ -76,6 +75,22 @@ class MovieApiClient{
     return result;
   }
 
+  Future<bool> isWatchlist(int movieId, String sessionId) async {
+    parser(dynamic json) {
+      final jsonMap = json as Map<String, dynamic>; 
+      final result = jsonMap['watchlist'] as bool;
+      return result;
+    }
+    final result = _networkClient.get(
+      '/movie/$movieId/account_states',parser,  
+      <String, dynamic>{
+        'api_key': Configuration.apiKey,
+        'session_id':sessionId,
+      }
+    );
+    return result;
+  }
+
   Future<String> addRating({
     required int movieId, 
     required String sessionId,
@@ -91,6 +106,11 @@ class MovieApiClient{
       };
     final result = _networkClient.post('/movie/$movieId/rating', parameters, parser, <String, dynamic>{'api_key': Configuration.apiKey, 'session_id': sessionId});
     return result;  
+  }
+
+
+  Future<void> deleteRaiting({required int movieId, required String sessionId}) async {
+      _networkClient.delete('/movie/$movieId/rating', <String, dynamic>{'api_key': Configuration.apiKey,'session_id': sessionId});
   }
 
 

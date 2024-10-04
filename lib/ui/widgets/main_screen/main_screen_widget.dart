@@ -44,10 +44,13 @@ class _MainScreenWidgetState extends State<MainScreenWidget> {
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
         currentIndex: _selectedTab,
+        fixedColor: Colors.amber,
+        unselectedItemColor: Colors.white,
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: Icon(Icons.home,),
             label: "Новости"
           ),
           BottomNavigationBarItem(

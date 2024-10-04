@@ -13,22 +13,27 @@ class MovieDetailsPosterData {
   final String? backdorPath;
   final String? posterPath;
   final bool isFavorite;
+  final bool isWatchlist;
   IconData get favoriteIcon => isFavorite ? Icons.favorite : Icons.favorite_outline;
+  IconData get watchlistIcon => isWatchlist ? Icons.bookmark : Icons.bookmark_outline;
 
    MovieDetailsPosterData({
     this.backdorPath,
     this.posterPath,
     this.isFavorite = false,
+    this.isWatchlist = false
   });
    MovieDetailsPosterData copyWith({
     String? backdropPath,
     String? posterPath,
     bool? isFavorite,
+    bool? isWatchlist
   }) {
     return MovieDetailsPosterData(
       backdorPath: backdropPath ?? backdorPath,
       posterPath: posterPath ?? this.posterPath,
       isFavorite: isFavorite ?? this.isFavorite,
+      isWatchlist: isWatchlist ?? this.isWatchlist
     );
   }
 }
@@ -93,14 +98,14 @@ class MovieDetailsModel extends ChangeNotifier{
   Future<void> setupLocale(BuildContext context, Locale locale) async {
     if(!_localeStorage.updateLocale(locale)) return;
     _dateFormat = DateFormat.yMMMMd(_localeStorage.localeTag);
-    updateData(null, false);
+    updateData(null, false, false);
     await loadDetails(context);
   }
 
 
 
 
-  void updateData(MovieDetails? details,bool isFavorite){
+  void updateData(MovieDetails? details,bool isFavorite, isWatchlist){
     data.title = details?.title ?? "Загрузка...";
     data.isLoading = details == null;
     if(details == null){
@@ -118,7 +123,8 @@ class MovieDetailsModel extends ChangeNotifier{
     data.posterData = MovieDetailsPosterData(
       posterPath: details.posterPath, 
       backdorPath: details.backdropPath, 
-      isFavorite: isFavorite
+      isFavorite: isFavorite,
+      isWatchlist: isWatchlist
     );
     var year = details.releaseDate?.year.toString();
     year = year != null ? ' ($year)' : '';
@@ -182,7 +188,7 @@ class MovieDetailsModel extends ChangeNotifier{
   Future<void> loadDetails(BuildContext context) async {
     try{
       final details = await _movieService.loadDetails(locale: _localeStorage.localeTag, movieId: movieId);
-      updateData(details.details, details.isFavorite);
+      updateData(details.details, details.isFavorite, details.isWatchlist);
     } on ApiClientException catch(e) {
       // ignore: use_build_context_synchronously
       _handleApiClientException(e, context);
@@ -204,6 +210,21 @@ class MovieDetailsModel extends ChangeNotifier{
     }
   }
 
+  Future<void> toggleWatchlist(BuildContext context) async {
+    
+    data.posterData = data.posterData.copyWith(isWatchlist: !data.posterData.isWatchlist);
+    notifyListeners();
+    try{
+      await _movieService.updateWathclist(
+        isWatchlist: data.posterData.isWatchlist, 
+        movieId: movieId
+      );
+    } on ApiClientException catch(e) {
+      // ignore: use_build_context_synchronously
+      _handleApiClientException(e, context);
+    }
+  }
+
   Future<void> addRating(int movieId, double rate, BuildContext context) async {
     try {
       data.rating = rate;
@@ -211,6 +232,20 @@ class MovieDetailsModel extends ChangeNotifier{
       await _movieService.updateRating(
         movieId: movieId,
          rate: rate
+      );
+
+    } on ApiClientException catch(e) {
+      // ignore: use_build_context_synchronously
+      _handleApiClientException(e, context);
+    }
+  }
+
+  Future<void> deleteRating(int movieId, BuildContext context) async {
+    try {
+      data.rating = 0;
+      notifyListeners();
+      await _movieService.deleteRaiting(
+        movieId: movieId,
       );
 
     } on ApiClientException catch(e) {

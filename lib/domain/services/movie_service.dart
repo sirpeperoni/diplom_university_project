@@ -25,10 +25,12 @@ class MovieService{
     final sessionId = await _sessionDataProvider.getSessionId();
     final movieDetails = await _movieApiClient.movieDetails(movieId, locale, sessionId);
     var isFavorite = false;
+    var isWatchlist = false;
     if(sessionId != null){
       isFavorite = await _movieApiClient.isFavorite(movieId, sessionId);
+      isWatchlist = await _movieApiClient.isWatchlist(movieId, sessionId);
     }
-    return MovieDetailsLocal(details: movieDetails, isFavorite: isFavorite);
+    return MovieDetailsLocal(details: movieDetails, isFavorite: isFavorite,isWatchlist:isWatchlist);
   }
 
   Future<void> updateFavorite({required int movieId,required bool isFavorite}) async {
@@ -45,6 +47,20 @@ class MovieService{
     );
   }
 
+  Future<void> updateWathclist({required int movieId,required bool isWatchlist}) async {
+    final sessionId = await _sessionDataProvider.getSessionId();
+    final accountId = await _sessionDataProvider.getAccountId();
+
+    if(sessionId == null || accountId == null) return;
+    await _accountApiClient.markAsWatchlist(
+      accountId: accountId,
+      sessionId: sessionId,
+      mediaType: MediaType.movie,
+      mediaId: movieId,
+      isWatchlist: isWatchlist,
+    );
+  }
+
   Future<void> updateRating({required int movieId,required double rate}) async {
     final sessionId = await _sessionDataProvider.getSessionId();
 
@@ -54,5 +70,12 @@ class MovieService{
       sessionId: sessionId,
       rate: rate
     );
+  }
+
+  Future<void> deleteRaiting({required int movieId}) async {
+    final sessionId = await _sessionDataProvider.getSessionId();
+
+    if(sessionId == null) return;
+    await _movieApiClient.deleteRaiting(movieId: movieId, sessionId: sessionId);
   }
 }

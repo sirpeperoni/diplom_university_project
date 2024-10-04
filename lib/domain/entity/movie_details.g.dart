@@ -47,6 +47,10 @@ MovieDetails _$MovieDetailsFromJson(Map<String, dynamic> json) => MovieDetails(
           MovieDetailsCredits.fromJson(json['credits'] as Map<String, dynamic>),
       videos:
           MovieDetailsVideos.fromJson(json['videos'] as Map<String, dynamic>),
+      accountStates: json['account_states'] == null
+          ? null
+          : AccountStates.fromJson(
+              json['account_states'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$MovieDetailsToJson(MovieDetails instance) =>
@@ -81,6 +85,7 @@ Map<String, dynamic> _$MovieDetailsToJson(MovieDetails instance) =>
       'vote_count': instance.voteCount,
       'credits': instance.credits.toJson(),
       'videos': instance.videos.toJson(),
+      'account_states': instance.accountStates?.toJson(),
     };
 
 BelongsToCollection _$BelongsToCollectionFromJson(Map<String, dynamic> json) =>
@@ -138,4 +143,28 @@ Map<String, dynamic> _$SpokenLanguageToJson(SpokenLanguage instance) =>
     <String, dynamic>{
       'iso_639_1': instance.iso,
       'name': instance.name,
+    };
+
+AccountStates _$AccountStatesFromJson(Map<String, dynamic> json) =>
+    AccountStates(
+      id: (json['id'] as num?)?.toInt(),
+      favorite: json['favorite'] as bool?,
+      rated: json['rated'],
+      watchlist: json['watchlist'] as bool?,
+    );
+
+Map<String, dynamic> _$AccountStatesToJson(AccountStates instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'favorite': instance.favorite,
+      'rated': instance.rated,
+      'watchlist': instance.watchlist,
+    };
+
+Rated _$RatedFromJson(Map<String, dynamic> json) => Rated(
+      value: (json['value'] as num).toInt(),
+    );
+
+Map<String, dynamic> _$RatedToJson(Rated instance) => <String, dynamic>{
+      'value': instance.value,
     };

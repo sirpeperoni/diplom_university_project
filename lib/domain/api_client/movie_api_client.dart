@@ -36,13 +36,13 @@ class MovieApiClient{
         'page':page.toString(),
         'language':locale,
         'query': query,
-        'include_adult': true.toString()
+        'include_adult': true.toString(),
       }
     );
     return result;
   }
 
-  Future<MovieDetails> movieDetails(int movieId, String locale) async {
+  Future<MovieDetails> movieDetails(int movieId, String locale, String? sessionId) async {
     parser(dynamic json) {
       final jsonMap = json as Map<String, dynamic>;
       final response = MovieDetails.fromJson(jsonMap);
@@ -51,9 +51,10 @@ class MovieApiClient{
     final result = _networkClient.get(
       '/movie/$movieId',parser,  
       <String, dynamic>{
-        'append_to_response': 'credits,videos',
+        'append_to_response': 'credits,videos,account_states',
         'api_key': Configuration.apiKey,
         'language':locale,
+        'session_id':sessionId,
       }
     );
     return result;
@@ -75,7 +76,22 @@ class MovieApiClient{
     return result;
   }
 
-
+  Future<String> addRating({
+    required int movieId, 
+    required String sessionId,
+    required double rate,
+  }) async {
+    parser(dynamic json) {
+      final jsonMap = json as Map<String, dynamic>;
+      final token = jsonMap['request_token'] as String;
+      return token;
+    }
+    final parameters = <String, dynamic>{
+        'value': rate.toString(),
+      };
+    final result = _networkClient.post('/movie/$movieId/rating', parameters, parser, <String, dynamic>{'api_key': Configuration.apiKey, 'session_id': sessionId});
+    return result;  
+  }
 
 
 

@@ -22,8 +22,8 @@ class MovieService{
       required String locale
     }
   ) async {
-    final movieDetails = await _movieApiClient.movieDetails(movieId, locale);
     final sessionId = await _sessionDataProvider.getSessionId();
+    final movieDetails = await _movieApiClient.movieDetails(movieId, locale, sessionId);
     var isFavorite = false;
     if(sessionId != null){
       isFavorite = await _movieApiClient.isFavorite(movieId, sessionId);
@@ -42,6 +42,17 @@ class MovieService{
       mediaType: MediaType.movie,
       mediaId: movieId,
       isFavorite: isFavorite,
+    );
+  }
+
+  Future<void> updateRating({required int movieId,required double rate}) async {
+    final sessionId = await _sessionDataProvider.getSessionId();
+
+    if(sessionId == null) return;
+    await _movieApiClient.addRating(
+      movieId: movieId,
+      sessionId: sessionId,
+      rate: rate
     );
   }
 }

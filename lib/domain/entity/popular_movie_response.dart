@@ -10,6 +10,7 @@ class PopularMovieResponse {
   final List<Movie> movies;
   final int totalResults;
   final int totalPages;
+  
 
   PopularMovieResponse({
     required this.page,
@@ -23,3 +24,4 @@ class PopularMovieResponse {
 
   Map<String, dynamic> toJson() => _$PopularMovieResponseToJson(this);
 }
+

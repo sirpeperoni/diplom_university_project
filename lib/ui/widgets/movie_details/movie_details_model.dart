@@ -67,6 +67,7 @@ class MovieDetailsData {
   String title = "";
   bool isLoading = true;
   String overview = "";
+  double rating = 0; 
   MovieDetailsPosterData posterData = MovieDetailsPosterData();
   MovieDetailsMovieNameData nameData = MovieDetailsMovieNameData(name: '', year: '');
   MovieDetailsMovieScoreData scoreData = MovieDetailsMovieScoreData(voteAverage: 0);
@@ -107,7 +108,13 @@ class MovieDetailsModel extends ChangeNotifier{
       return;
     }
     data.overview = details.overview ?? '';
-
+    final rate = details.accountStates;
+    if(rate is AccountStates){
+      final rated = rate.rated;
+      if(rated is Map){
+        data.rating = rated['value'];
+      }
+    }
     data.posterData = MovieDetailsPosterData(
       posterPath: details.posterPath, 
       backdorPath: details.backdropPath, 
@@ -131,6 +138,7 @@ class MovieDetailsModel extends ChangeNotifier{
     )).toList();
     notifyListeners();
   }
+
 
   String makeSummary(MovieDetails details){
     final releaseDate = details.releaseDate;
@@ -190,6 +198,21 @@ class MovieDetailsModel extends ChangeNotifier{
         isFavorite: data.posterData.isFavorite, 
         movieId: movieId
       );
+    } on ApiClientException catch(e) {
+      // ignore: use_build_context_synchronously
+      _handleApiClientException(e, context);
+    }
+  }
+
+  Future<void> addRating(int movieId, double rate, BuildContext context) async {
+    try {
+      data.rating = rate;
+      notifyListeners();
+      await _movieService.updateRating(
+        movieId: movieId,
+         rate: rate
+      );
+
     } on ApiClientException catch(e) {
       // ignore: use_build_context_synchronously
       _handleApiClientException(e, context);

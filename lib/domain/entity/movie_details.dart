@@ -1,4 +1,6 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:json_annotation/json_annotation.dart';
+
 import 'package:the_movie_db/domain/entity/date_parser.dart';
 import 'package:the_movie_db/domain/entity/movie_details_credits.dart';
 import 'package:the_movie_db/domain/entity/movie_details_videos.dart';
@@ -35,6 +37,7 @@ class MovieDetails {
   final int voteCount;
   final MovieDetailsCredits credits;
   final MovieDetailsVideos videos;
+  final AccountStates? accountStates;
   MovieDetails({
     required this.adult,
     required this.backdropPath,
@@ -62,7 +65,8 @@ class MovieDetails {
     required this.voteAverage,
     required this.voteCount,
     required this.credits,
-    required this.videos
+    required this.videos,
+    required this.accountStates
   });
 
   factory MovieDetails.fromJson(Map<String, dynamic> json) =>
@@ -144,4 +148,33 @@ class SpokenLanguage {
       _$SpokenLanguageFromJson(json);
 
   Map<String, dynamic> toJson() => _$SpokenLanguageToJson(this);
+}
+
+
+@JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
+class  AccountStates {
+  final int? id;
+  final bool? favorite;
+  dynamic rated;
+  final bool? watchlist;
+  AccountStates({required this.id, required this.favorite, required this.rated, required this.watchlist});
+
+  factory AccountStates.fromJson(Map<String, dynamic> json) =>
+    _$AccountStatesFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AccountStatesToJson(this);
+}
+
+
+@JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
+class Rated {
+  int value;
+  Rated({
+    required this.value,
+  });
+
+  factory Rated.fromJson(Map<String, dynamic> json) =>
+      _$RatedFromJson(json);
+
+  Map<String, dynamic> toJson() => _$RatedToJson(this);
 }

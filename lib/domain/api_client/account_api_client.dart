@@ -36,6 +36,24 @@ class AccountApiClient{
     return result;
   }
 
+  Future<int> getRatedMovies({required int accountId, required int page,required String locale, required String sessionId}) async {
+    parser(dynamic json) {
+      final jsonMap = json as Map<String, dynamic>;
+      final result = jsonMap['id'] as int;
+      return result;
+    }
+    final result = _networkClient.get(
+      '/account/$accountId/rated/movies',parser,  
+      <String, dynamic>{
+        'api_key': Configuration.apiKey,
+        'page':page.toString(),
+        'language':locale,
+        'session_id':sessionId
+      }
+    );
+    return result;
+  }
+
   Future<String> markAsFavorite({
     required int accountId, 
     required String sessionId,
@@ -56,4 +74,6 @@ class AccountApiClient{
     final result = _networkClient.post('/account/$accountId/favorite', parameters, parser, <String, dynamic>{'api_key': Configuration.apiKey, 'session_id': sessionId});
     return result;  
   }
+
+
 }

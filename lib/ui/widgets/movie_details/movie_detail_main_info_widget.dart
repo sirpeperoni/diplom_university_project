@@ -1,5 +1,8 @@
 
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_stars/flutter_rating_stars.dart';
 import 'package:provider/provider.dart';
 import 'package:the_movie_db/ui/navigation/main_navigation.dart';
 import 'package:the_movie_db/ui/widgets/cache/cached_images.dart';
@@ -9,17 +12,45 @@ import 'package:the_movie_db/ui/widgets/movie_details/movie_details_model.dart';
 class MovieDetailsMainInfoWidget extends StatelessWidget {
   const MovieDetailsMainInfoWidget({super.key});
 
+
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    final rating = context.select((MovieDetailsModel model) => model.data.rating);
+    final model = context.read<MovieDetailsModel>();
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _TopPosterWidget(),
-        Padding(
+        const _TopPosterWidget(),
+        const Padding(
           padding: EdgeInsets.symmetric(vertical: 20, horizontal: 40),
           child: _MovieNameWidget(),
         ),
-        _ScoreWidget(),
+        const _ScoreWidget(),
+        Center(
+          child: RatingStars(
+            value: rating,
+            onValueChanged: (v) {
+              model.addRating(model.movieId, v, context);
+            },
+            starBuilder: (index, color) => Icon(
+              Icons.star,
+              color: color,
+            ),
+            starCount: 10,
+            starSize: 20,
+            valueLabelRadius: 10,
+            maxValue: 10,
+            starSpacing: 2,
+            maxValueVisibility: false,
+            valueLabelVisibility: false,
+            valueLabelPadding:
+            const EdgeInsets.symmetric(vertical: 1, horizontal: 8),
+            valueLabelMargin: const EdgeInsets.only(right: 8),
+            starOffColor: const Color(0xffe7e8ea),
+            starColor: Colors.yellow,
+          ),
+        ),
+        SizedBox(height: 5,),
         _SummeryWidget(),
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
@@ -73,6 +104,7 @@ class _OverviewWidget extends StatelessWidget {
 class _TopPosterWidget extends StatelessWidget {
 
   const _TopPosterWidget();
+
   @override
   Widget build(BuildContext context) {
     final model = context.read<MovieDetailsModel>();
@@ -96,13 +128,14 @@ class _TopPosterWidget extends StatelessWidget {
             top: 5,
             right: 5,
             child: IconButton(icon: Icon(posterData.favoriteIcon), onPressed: () => model.toggleFavorite(context),)
-          )
+          ),
         ],
       ),
     );
   }
 }
 
+//IconButton(icon: Icon(Icons.star_half), onPressed: () => model.addRating(model.movieId, 5.5, context)
 
 class _MovieNameWidget extends StatelessWidget {
   const _MovieNameWidget();

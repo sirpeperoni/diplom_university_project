@@ -1,6 +1,8 @@
 import 'package:the_movie_db/configuration/configuration.dart';
 import 'package:the_movie_db/domain/api_client/network_client.dart';
+import 'package:the_movie_db/domain/entity/genres.dart';
 import 'package:the_movie_db/domain/entity/movie_details.dart';
+import 'package:the_movie_db/domain/entity/now_playing_movies.dart';
 import 'package:the_movie_db/domain/entity/popular_movie_response.dart';
 
 
@@ -19,6 +21,16 @@ class MovieApiClient{
       return response;
     }
     final result = _networkClient.get('/movie/popular',parser,  <String, dynamic>{'api_key': apiKey,'page':page.toString(), 'language':locale});
+    return result;
+  }
+
+  Future<NowPlayingMovies> noewPlayingMovie(int page, String locale, String apiKey, String region) async {
+    parser(dynamic json) {
+      final jsonMap = json as Map<String, dynamic>;
+      final response = NowPlayingMovies.fromJson(jsonMap);
+      return response;
+    }
+    final result = _networkClient.get('/movie/now_playing',parser,  <String, dynamic>{'api_key': apiKey,'page':page.toString(), 'language':locale, 'region':region});
     return result;
   }
 
@@ -113,7 +125,15 @@ class MovieApiClient{
       _networkClient.delete('/movie/$movieId/rating', <String, dynamic>{'api_key': Configuration.apiKey,'session_id': sessionId});
   }
 
-
+  Future<Genres> getMovieGenres() async {
+    parser(dynamic json) {
+      final jsonMap = json as Map<String, dynamic>;
+      final response = Genres.fromJson(jsonMap);
+      return response;
+    }
+    final result = _networkClient.get('/genre/movie/list', parser, <String, dynamic>{'api_key': Configuration.apiKey});
+    return result;
+  }
 
 
 

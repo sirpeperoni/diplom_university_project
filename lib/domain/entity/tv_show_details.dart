@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:json_annotation/json_annotation.dart';
 import 'package:the_movie_db/domain/entity/date_parser.dart';
+import 'package:the_movie_db/domain/entity/discover/genre.dart';
 part 'tv_show_details.g.dart';
 @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
 class TvShowDetails{
@@ -54,6 +55,7 @@ class NextEpisodeToAir {
   final int id;
   final String name;
   final String overview;
+  // ignore: non_constant_identifier_names
   final double vote_average;
   final int voteCount;
   @JsonKey(fromJson: parseDateFromString)
@@ -66,6 +68,7 @@ class NextEpisodeToAir {
   final int showId;
   final String? stillPath;
 
+  // ignore: non_constant_identifier_names
   NextEpisodeToAir({required this.id, required this.name, required this.overview, required this.vote_average, required this.voteCount, required this.airDate, required this.episodeNumber, required this.episodeType, required this.productionCode, required this.runtime, required this.seasonNumber, required this.showId, required this.stillPath});
 
   factory NextEpisodeToAir.fromJson(Map<String, dynamic> json) => _$NextEpisodeToAirFromJson(json);
@@ -93,19 +96,7 @@ class CreatedBy {
   Map<String, dynamic> toJson() => _$CreatedByToJson(this);
 }
 
-@JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
-class Genre {
-  final int id;
-  final String name;
-  Genre({
-    required this.id,
-    required this.name,
-  });
 
-  factory Genre.fromJson(Map<String, dynamic> json) => _$GenreFromJson(json);
-
-  Map<String, dynamic> toJson() => _$GenreToJson(this);
-}
 
 
 @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
@@ -168,7 +159,7 @@ class ProductionCompanie {
 
 @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
 class ProductionCountrie {
-  @JsonKey(name: 'iso_3166_1')
+  @JsonKey(name:'iso_3166_1')
   final String iso;
   final String name;
   ProductionCountrie({

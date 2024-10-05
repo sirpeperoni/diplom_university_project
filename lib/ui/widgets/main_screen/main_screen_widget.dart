@@ -40,7 +40,8 @@ class _MainScreenWidgetState extends State<MainScreenWidget> {
           _screenFactory.makeNewsList(),
           _screenFactory.makeMovieList(),
           _screenFactory.makeTvShowList(),
-          _screenFactory.makePeopleList()
+          _screenFactory.makePeopleList(),
+          _screenFactory.makeDiscoverWidget(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -64,7 +65,11 @@ class _MainScreenWidgetState extends State<MainScreenWidget> {
           BottomNavigationBarItem(
             icon: Icon(Icons.people),
             label: "Люди"
-          ), 
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.search),
+            label: "Поиск"
+          ),
         ],
         onTap: onSelectTab,
       ),

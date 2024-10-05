@@ -89,21 +89,11 @@ Map<String, dynamic> _$MovieDetailsToJson(MovieDetails instance) =>
     };
 
 BelongsToCollection _$BelongsToCollectionFromJson(Map<String, dynamic> json) =>
-    BelongsToCollection();
+    const BelongsToCollection();
 
 Map<String, dynamic> _$BelongsToCollectionToJson(
         BelongsToCollection instance) =>
     <String, dynamic>{};
-
-Genre _$GenreFromJson(Map<String, dynamic> json) => Genre(
-      id: (json['id'] as num).toInt(),
-      name: json['name'] as String,
-    );
-
-Map<String, dynamic> _$GenreToJson(Genre instance) => <String, dynamic>{
-      'id': instance.id,
-      'name': instance.name,
-    };
 
 ProductionCompanie _$ProductionCompanieFromJson(Map<String, dynamic> json) =>
     ProductionCompanie(

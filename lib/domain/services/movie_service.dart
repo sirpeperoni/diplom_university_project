@@ -2,7 +2,9 @@ import 'package:the_movie_db/configuration/configuration.dart';
 import 'package:the_movie_db/domain/api_client/account_api_client.dart';
 import 'package:the_movie_db/domain/api_client/movie_api_client.dart';
 import 'package:the_movie_db/domain/data_providers/session_data_provider.dart';
+import 'package:the_movie_db/domain/entity/genres.dart';
 import 'package:the_movie_db/domain/entity/popular_movie_response.dart';
+import 'package:the_movie_db/domain/entity/rated_movies.dart';
 import 'package:the_movie_db/domain/local_entity/movie_details_local.dart';
 
 class MovieService{
@@ -15,6 +17,35 @@ class MovieService{
     
   Future<PopularMovieResponse> searchMovie(int page, String locale, String query) async =>
     _movieApiClient.searchMovie(page, locale, query, Configuration.apiKey);
+
+  Future<PopularMovieResponse> favoriteMovies(
+    int page, 
+    String locale, 
+    int accountId, 
+    String sessionId,
+    String sortBy
+  ) async => 
+    _accountApiClient.getFavoriteMovies(accountId: accountId, page: page, locale: locale, sessionId: sessionId, sortBy: sortBy);
+
+  Future<RatedMoviesResponse> ratedMovies(
+    int page, 
+    String locale, 
+    int accountId, 
+    String sessionId,
+    String sortBy
+  ) async => 
+    _accountApiClient.getRatedMovies(accountId: accountId, page: page, locale: locale, sessionId: sessionId, sortBy: sortBy);
+
+  Future<PopularMovieResponse> watchlistMovies(
+    int page, 
+    String locale, 
+    int accountId, 
+    String sessionId,
+    String sortBy
+  ) async => 
+    _accountApiClient.getWatchlistMovies(accountId: accountId, page: page, locale: locale, sessionId: sessionId, sortBy: sortBy);
+
+  Future<Genres> getMovieGenres() async => _movieApiClient.getMovieGenres();
 
   Future<MovieDetailsLocal> loadDetails(
     {

@@ -1,0 +1,93 @@
+import 'package:flutter/material.dart';
+import 'package:the_movie_db/domain/api_client/api_client_exception.dart';
+import 'package:the_movie_db/domain/api_client/configuration_api_client.dart';
+import 'package:the_movie_db/domain/entity/discover/countries.dart';
+import 'package:the_movie_db/domain/local_entity/country_local.dart';
+import 'package:the_movie_db/domain/local_entity/genres_local.dart';
+import 'package:the_movie_db/domain/services/auth_service.dart';
+import 'package:the_movie_db/domain/services/movie_service.dart';
+import 'package:the_movie_db/library/Widgets/localized_model.dart';
+import 'package:the_movie_db/ui/navigation/main_navigation.dart';
+
+class DiscoverViewModel extends ChangeNotifier{
+  final _discoverService = ConfigurationApiClient();
+  final _movieService = MovieService();
+  final _authService = AuthService();
+  final _localeStorage = LocalizedModelStorage();
+  var isChooseGenre = false;
+  late List<GenresWithIcon> genres;
+  List<GenresWithIcon> toggleGenres = [];
+
+  var isChooseCountries = false;
+  late final List<CountryWithIcon> countries;
+  List<CountryWithIcon> toggleCountry = [];
+
+  
+  void changeGenre(){
+    isChooseGenre = !isChooseGenre;
+    notifyListeners();
+  }
+
+  void changeCountries(){
+    isChooseCountries = !isChooseCountries;
+    notifyListeners();
+  }
+
+
+
+  Future<void> setupLocale(BuildContext context, Locale locale) async {
+    if(!_localeStorage.updateLocale(locale)) return;
+    //updateData(null, false, false);
+    await loadDetails(context);
+  }
+
+  Future<void> loadDetails(BuildContext context,) async {
+    try{
+      final _countries = await _discoverService.getCountries(_localeStorage.localeTag);
+      countries = _countries.map((e) => CountryWithIcon(Countries(englishName: e['english_name'], iso: e['iso_3166_1'], nativeName: e['native_name']), false)).toList();
+      final _genres = await _movieService.getMovieGenres();
+      genres = _genres.genres.map((e) => GenresWithIcon(e, false)).toList();
+      notifyListeners();
+      //updateData(details.details, details.isFavorite, details.isWatchlist);
+    } on ApiClientException catch(e) {
+      // ignore: use_build_context_synchronously
+      _handleApiClientException(e, context);
+    }
+  }
+
+  void toggleGenre(int index){
+    genres[index].choose = !genres[index].choose;
+    if(genres[index].choose){
+      toggleGenres.add(genres[index]);
+    } else {
+      toggleGenres.remove(genres[index]);
+    }
+    notifyListeners();
+  }
+
+  void toggleCountryFunc(int index){
+    countries[index].choose = !countries[index].choose;
+    if(countries[index].choose){
+      toggleCountry.add(countries[index]);
+    } else {
+      toggleCountry.remove(countries[index]);
+    }
+    notifyListeners();
+  }
+
+  void updateData(){
+    
+  }
+
+  void _handleApiClientException(ApiClientException exeption, BuildContext context){
+    switch (exeption.type) {
+      case ApiClientExceptionType.sessionExpired:
+        _authService.logout();
+        MainNavigation.resetNavigation(context);
+        break;
+      default:
+        // ignore: avoid_print
+        print(exeption);
+    }
+  }
+}

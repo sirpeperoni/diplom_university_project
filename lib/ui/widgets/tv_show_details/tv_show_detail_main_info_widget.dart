@@ -75,7 +75,6 @@ class _TopPosterWidget extends StatelessWidget {
   const _TopPosterWidget();
   @override
   Widget build(BuildContext context) {
-    final model = context.read<TvShowDetailsModel>();
     final posterData = context.select((TvShowDetailsModel model) => model.data.posterData);
     final backdorPath = posterData.backdorPath;
     final posterPath = posterData.posterPath;

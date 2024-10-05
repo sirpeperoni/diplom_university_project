@@ -2,6 +2,7 @@
 import 'package:json_annotation/json_annotation.dart';
 
 import 'package:the_movie_db/domain/entity/date_parser.dart';
+import 'package:the_movie_db/domain/entity/discover/genre.dart';
 import 'package:the_movie_db/domain/entity/movie_details_credits.dart';
 import 'package:the_movie_db/domain/entity/movie_details_videos.dart';
 
@@ -85,19 +86,7 @@ class BelongsToCollection {
   Map<String, dynamic> toJson() => _$BelongsToCollectionToJson(this);
 }
 
-@JsonSerializable(fieldRename: FieldRename.snake)
-class Genre {
-  final int id;
-  final String name;
-  Genre({
-    required this.id,
-    required this.name,
-  });
 
-  factory Genre.fromJson(Map<String, dynamic> json) => _$GenreFromJson(json);
-
-  Map<String, dynamic> toJson() => _$GenreToJson(this);
-}
 
 @JsonSerializable(fieldRename: FieldRename.snake)
 class ProductionCompanie {

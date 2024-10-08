@@ -14,6 +14,7 @@ class DiscoverViewModel extends ChangeNotifier{
   final _movieService = MovieService();
   final _authService = AuthService();
   final _localeStorage = LocalizedModelStorage();
+
   var isChooseGenre = false;
   late List<GenresWithIcon> genres;
   List<GenresWithIcon> toggleGenres = [];
@@ -21,6 +22,9 @@ class DiscoverViewModel extends ChangeNotifier{
   var isChooseCountries = false;
   late final List<CountryWithIcon> countries;
   List<CountryWithIcon> toggleCountry = [];
+  List<CountryWithIcon?> seacrhCountry = [];
+  bool isNotSearchInCountryList = false;
+
 
   
   void changeGenre(){
@@ -44,7 +48,8 @@ class DiscoverViewModel extends ChangeNotifier{
   Future<void> loadDetails(BuildContext context,) async {
     try{
       final _countries = await _discoverService.getCountries(_localeStorage.localeTag);
-      countries = _countries.map((e) => CountryWithIcon(Countries(englishName: e['english_name'], iso: e['iso_3166_1'], nativeName: e['native_name']), false)).toList();
+      countries = _countries.map((e) => CountryWithIcon(Countries(englishName: e['english_name'], iso: e['iso_3166_1'], nativeName: e['native_name']), false, )).toList();
+      seacrhCountry = countries;
       final _genres = await _movieService.getMovieGenres();
       genres = _genres.genres.map((e) => GenresWithIcon(e, false)).toList();
       notifyListeners();
@@ -75,6 +80,39 @@ class DiscoverViewModel extends ChangeNotifier{
     notifyListeners();
   }
 
+   void searchCountry(String query){
+    if(query.isEmpty){
+      seacrhCountry = countries;
+      notifyListeners();
+      return;
+    }
+    seacrhCountry = countries.map((e) {
+      if(e.country.nativeName.toLowerCase().startsWith(query.toLowerCase())) {
+        return e;
+      }
+      if(e.country.englishName.toLowerCase().startsWith(query.toLowerCase())) {
+        return e;
+      } 
+    }).where((n) => n != null).toList();
+    notifyListeners();
+   }
+
+   void reset(){
+    toggleCountry.clear();
+    toggleGenres.cast();
+    notifyListeners();
+   }
+
+  void onSubmitTap(BuildContext context) {
+    final genresString = toggleGenres.map((e) => e.genre.id).join(',');
+    final countryString = toggleCountry.map((e) => e.country.iso).join(',');
+    final arguments = ScreenArguments(countries: countryString, genres: genresString);
+    Navigator.of(context).pushNamed(
+      MainNavigationRoutesName.discoverScreenMovieResult,
+      arguments: arguments
+    );
+  }
+
   void updateData(){
     
   }
@@ -90,4 +128,13 @@ class DiscoverViewModel extends ChangeNotifier{
         print(exeption);
     }
   }
+}
+
+
+
+class ScreenArguments{
+  final String genres;
+  final String countries;
+
+  ScreenArguments({required this.countries,required this.genres});
 }

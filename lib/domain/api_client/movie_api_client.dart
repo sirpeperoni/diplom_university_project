@@ -136,6 +136,26 @@ class MovieApiClient{
   }
 
 
+  Future<PopularMovieResponse> getDiscoverMovies(int page, String locale, String genres, String countries) async {
+    parser(dynamic json) {
+      final jsonMap = json as Map<String, dynamic>;
+      final response = PopularMovieResponse.fromJson(jsonMap);
+      return response;
+    }
+    final result = _networkClient.get(
+      '/discover/movie',parser,  
+      <String, dynamic>{
+        'api_key': Configuration.apiKey,
+        'page':page.toString(),
+        'language':locale,
+        'with_genres':genres,
+        'with_origin_country':countries
+      }
+    );
+    return result;
+  }
+
+
 
 
 }

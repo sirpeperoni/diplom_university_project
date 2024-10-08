@@ -109,4 +109,13 @@ class MovieService{
     if(sessionId == null) return;
     await _movieApiClient.deleteRaiting(movieId: movieId, sessionId: sessionId);
   }
+
+
+  Future<PopularMovieResponse> getDiscoverMovies(    
+    int page, 
+    String locale, 
+    String genres,
+    String countries
+  ) async => await _movieApiClient.getDiscoverMovies(page, locale, genres, countries);
+
 }

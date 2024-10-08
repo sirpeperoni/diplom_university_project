@@ -4,6 +4,8 @@ import 'package:the_movie_db/ui/widgets/auth/auth_model.dart';
 import 'package:the_movie_db/ui/widgets/auth/auth_widget.dart';
 import 'package:the_movie_db/ui/widgets/discover/discover_model.dart';
 import 'package:the_movie_db/ui/widgets/discover/discover_widget.dart';
+import 'package:the_movie_db/ui/widgets/discover/results_model.dart';
+import 'package:the_movie_db/ui/widgets/discover/results_movie.dart';
 import 'package:the_movie_db/ui/widgets/loader_widget/loader_view_model.dart';
 import 'package:the_movie_db/ui/widgets/loader_widget/loader_widget.dart';
 import 'package:the_movie_db/ui/widgets/main_screen/main_screen_widget.dart';
@@ -102,6 +104,13 @@ class ScreenFactory{
     return ChangeNotifierProvider(
       create: (_) => DiscoverViewModel(),
       child: const DiscoverWidget()
+    );
+  }
+
+  Widget makeDiscoverMoviesListWidget(String genres, String countries){
+    return ChangeNotifierProvider(
+      create: (_) => ResultsModel(genres, countries),
+      child: const ResultDiscoverMovieListWidget(),
     );
   }
 }

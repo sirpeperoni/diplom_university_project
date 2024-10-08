@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:the_movie_db/domain/factory/screen_factory.dart';
+import 'package:the_movie_db/ui/widgets/discover/discover_model.dart';
 
 
 abstract class MainNavigationRoutesName{
@@ -12,6 +13,8 @@ abstract class MainNavigationRoutesName{
   static const movieTrailerWidget = '/main_screen/movie_details/trailer';
   static const personsScreenDetails = '/persons_screen/person_details';
   static const tvShowScreenDetails = '/tv_show_screen/tv_show_details';
+  static const discoverScreen = '/discover';
+  static const discoverScreenMovieResult = '/discover/movies';
 }
 
 
@@ -26,7 +29,8 @@ class MainNavigation{
     MainNavigationRoutesName.auth: (_) => _screenFactory.makeAuthWidget(),
     MainNavigationRoutesName.mainScreen: (_) => _screenFactory.makeMainScreenWidget(),
     MainNavigationRoutesName.tvShowScreen: (_) => _screenFactory.makeTvShowList(),
-    MainNavigationRoutesName.personsScreen: (_) => _screenFactory.makePeopleList()
+    MainNavigationRoutesName.personsScreen: (_) => _screenFactory.makePeopleList(),
+    MainNavigationRoutesName.discoverScreen: (_) => _screenFactory.makeDiscoverWidget()
   };
 
   Route<Object> onGenerateRoute(RouteSettings settings){
@@ -49,12 +53,20 @@ class MainNavigation{
         return MaterialPageRoute(
           builder: (_) => _screenFactory.makePersonDetails(personId)
         );
+      case MainNavigationRoutesName.discoverScreenMovieResult:
+        final arguments = settings.arguments;
+        final args = arguments is ScreenArguments ? arguments : ScreenArguments(countries: '', genres: '');
+        final genres = args.genres;
+        final countries = args.countries;
+        return MaterialPageRoute(
+          builder: (_) => _screenFactory.makeDiscoverMoviesListWidget(genres, countries),
+        );
       case MainNavigationRoutesName.tvShowScreenDetails:
         final arguments = settings.arguments;
         final personId = arguments is int ? arguments : 0;
         return MaterialPageRoute(
           builder: (_) => _screenFactory.makeTvShowDetails(personId)
-      );
+        );
       default:
         const widget = Text("Navigation error!!!");
         return MaterialPageRoute(builder: (context) => widget);

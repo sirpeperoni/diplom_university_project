@@ -1,6 +1,5 @@
 import 'package:the_movie_db/configuration/configuration.dart';
 import 'package:the_movie_db/domain/api_client/network_client.dart';
-import 'package:the_movie_db/domain/entity/discover/countries.dart';
 import 'package:the_movie_db/domain/entity/discover/details.dart';
 
 class ConfigurationApiClient{

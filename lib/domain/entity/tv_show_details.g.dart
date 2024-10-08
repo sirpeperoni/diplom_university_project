@@ -160,8 +160,6 @@ Map<String, dynamic> _$CreatedByToJson(CreatedBy instance) => <String, dynamic>{
       'profile_path': instance.profilePath,
     };
 
-
-
 LastEpisodeToAir _$LastEpisodeToAirFromJson(Map<String, dynamic> json) =>
     LastEpisodeToAir(
       id: (json['id'] as num).toInt(),
@@ -196,7 +194,7 @@ Map<String, dynamic> _$LastEpisodeToAirToJson(LastEpisodeToAir instance) =>
 
 Networks _$NetworksFromJson(Map<String, dynamic> json) => Networks(
       id: (json['id'] as num).toInt(),
-      logoPath: json['logo_path'] as String,
+      logoPath: json['logo_path'] as String?,
       name: json['name'] as String,
       originCountry: json['origin_country'] as String,
     );

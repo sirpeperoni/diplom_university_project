@@ -10,7 +10,7 @@ part 'movie_details.g.dart';
 
 @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
 class MovieDetails {
-  final bool adult;
+  final bool? adult;
   final String? backdropPath;
   final BelongsToCollection? belongsToCollection;
   final int budget;

@@ -90,7 +90,7 @@ class MovieListViewModel extends ChangeNotifier {
     final id = _movies[index].id;
     Navigator.of(context).pushNamed(
       MainNavigationRoutesName.movieDetails,
-      arguments: id,
+      arguments: id
     );
   }
 

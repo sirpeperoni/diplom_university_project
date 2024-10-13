@@ -25,7 +25,8 @@ class DiscoverViewModel extends ChangeNotifier{
   List<CountryWithIcon?> seacrhCountry = [];
   bool isNotSearchInCountryList = false;
 
-
+  String fromYear = 'Выберите год';
+  String toYear = 'Выберите год';
   
   void changeGenre(){
     isChooseGenre = !isChooseGenre;
@@ -47,11 +48,11 @@ class DiscoverViewModel extends ChangeNotifier{
 
   Future<void> loadDetails(BuildContext context,) async {
     try{
-      final _countries = await _discoverService.getCountries(_localeStorage.localeTag);
-      countries = _countries.map((e) => CountryWithIcon(Countries(englishName: e['english_name'], iso: e['iso_3166_1'], nativeName: e['native_name']), false, )).toList();
+      final receivedCountries = await _discoverService.getCountries(_localeStorage.localeTag);
+      countries = receivedCountries.map((e) => CountryWithIcon(Countries(englishName: e['english_name'], iso: e['iso_3166_1'], nativeName: e['native_name']), false, )).toList();
       seacrhCountry = countries;
-      final _genres = await _movieService.getMovieGenres();
-      genres = _genres.genres.map((e) => GenresWithIcon(e, false)).toList();
+      final receivedGenres = await _movieService.getMovieGenres();
+      genres = receivedGenres.genres.map((e) => GenresWithIcon(e, false)).toList();
       notifyListeners();
       //updateData(details.details, details.isFavorite, details.isWatchlist);
     } on ApiClientException catch(e) {
@@ -128,6 +129,17 @@ class DiscoverViewModel extends ChangeNotifier{
         print(exeption);
     }
   }
+
+  void changeYear(String year, int index){
+    if(index == 1){
+      fromYear = year;
+    } else{
+      toYear = year;
+    }  
+    notifyListeners();
+  }
+
+
 }
 
 

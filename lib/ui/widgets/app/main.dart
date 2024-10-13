@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:the_movie_db/Theme/app_colors.dart';
 import 'package:the_movie_db/ui/navigation/main_navigation.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 void main() {
@@ -16,9 +15,9 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        appBarTheme: const AppBarTheme(backgroundColor: AppColors.mainDarkBlue),
+        appBarTheme: const AppBarTheme(backgroundColor: Color.fromARGB(255, 0, 0, 0)),
         bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-          backgroundColor: AppColors.mainDarkBlue,
+          backgroundColor: Color.fromARGB(255, 0, 0, 0),
           selectedItemColor: Colors.white,
           unselectedItemColor: Colors.grey 
         ),

@@ -13,13 +13,15 @@ class PeopleListRowData {
   final String name;
   final double popularity;
   final String knownForDepartment;
+  final String originalName;
 
   PeopleListRowData(
     {required this.id,
      required this.profilePath,
      required this.name,
      required this.popularity,
-     required this.knownForDepartment
+     required this.knownForDepartment,
+     required this.originalName
   });
 }
 
@@ -76,12 +78,14 @@ class PeopleListViewModel extends ChangeNotifier{
 
   PeopleListRowData _makeRowData(ActorInList actor){
     final profilePath = actor.profilePath ?? '';
+    final originalName = actor.originalName ?? '';
     return PeopleListRowData(
       id: actor.id, 
       profilePath: profilePath, 
       name: actor.name,
       popularity: actor.popularity,
-      knownForDepartment: actor.knownForDepartment
+      knownForDepartment: actor.knownForDepartment,
+      originalName: originalName
     );
   }
 

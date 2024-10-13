@@ -14,13 +14,17 @@ class TvShowListRowData {
   final String title;
   final String firstAirDate;
   final String overview;
+  final String voteAverage;
+  final String voteCount;
 
   TvShowListRowData(
     {required this.id,
      required this.posterPath,
      required this.title,
      required this.firstAirDate,
-     required this.overview
+     required this.overview,
+     required this.voteCount,
+     required this.voteAverage
   });
 }
 
@@ -79,7 +83,17 @@ class TvShowViewModel extends ChangeNotifier{
   TvShowListRowData _makeRowData(TvShow movie){
     final releaseDate = movie.firstAirDate;
     final releaseDateTitle = releaseDate != null ? _dateFormat.format(releaseDate) : '';
-    return TvShowListRowData(id: movie.id, posterPath: movie.posterPath, title: movie.name, firstAirDate: releaseDateTitle, overview: movie.overview);
+    final voteAverage = movie.voteAverage.toStringAsPrecision(2);
+    final voteCount = movie.voteCount.toString();
+    return TvShowListRowData(
+      id: movie.id,
+      posterPath: movie.posterPath,
+      title: movie.name,
+      firstAirDate: releaseDateTitle,
+      overview: movie.overview,
+      voteAverage: voteAverage,
+      voteCount: voteCount
+    );
   }
 
   void onMovieTap(BuildContext context, int index) {

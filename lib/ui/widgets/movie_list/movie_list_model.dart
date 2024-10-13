@@ -14,13 +14,17 @@ class MovieListRowData {
   final String title;
   final String releaseDate;
   final String overview;
+  final String voteAverage;
+  final String voteCount;
 
   MovieListRowData(
     {required this.id,
      required this.posterPath,
      required this.title,
      required this.releaseDate,
-     required this.overview
+     required this.overview,
+     required this.voteCount,
+     required this.voteAverage
   });
 }
 
@@ -83,7 +87,17 @@ class MovieListViewModel extends ChangeNotifier {
   MovieListRowData _makeRowData(Movie movie){
     final releaseDate = movie.releaseDate;
     final releaseDateTitle = releaseDate != null ? _dateFormat.format(releaseDate) : '';
-    return MovieListRowData(id: movie.id, posterPath: movie.posterPath, title: movie.title, releaseDate: releaseDateTitle, overview: movie.overview);
+    final voteAverage = movie.voteAverage.toStringAsPrecision(2);
+    final voteCount = movie.voteCount.toString();
+    return MovieListRowData(
+      id: movie.id,
+      posterPath: movie.posterPath,
+      title: movie.title,
+      releaseDate: releaseDateTitle,
+      overview: movie.overview,
+      voteAverage: voteAverage,
+      voteCount: voteCount
+    );
   }
 
   void onMovieTap(BuildContext context, int index) {

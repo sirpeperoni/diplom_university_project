@@ -24,7 +24,6 @@ class _TWShowListWidgetState extends State<TWShowListWidget> {
     return const Stack(
       children: [
         _TvShowListWidget(),
-        _SearchWidget(),
       ],
     );
   }
@@ -60,7 +59,6 @@ class _TvShowListWidget extends StatelessWidget {
     return RefreshIndicator(
       onRefresh: () => model.resetList(),
       child: ListView.builder(
-        padding: const EdgeInsets.only(top: 70),
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
         itemCount: model.shows.length,
         itemExtent: 163,
@@ -84,30 +82,30 @@ class _TvShowListRowWidget extends StatelessWidget {
     final model = context.read<TvShowViewModel>();
     final show = model.shows[index];
     final posterPath = show.posterPath;
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      child: Stack(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              border: Border.all(color: Colors.black.withOpacity(0.2)),
-              borderRadius: const BorderRadius.all(Radius.circular(10)),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            clipBehavior: Clip.hardEdge,
-            child: Row(
-              children: [
-                if(posterPath != null)
-                  CacheImage(imagePath: posterPath, width: 95),              
-                const SizedBox(width: 15),
-                Expanded(
+    return Stack(
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.black.withOpacity(0.2)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          clipBehavior: Clip.hardEdge,
+          child: Row(
+            children: [
+              if(posterPath != null)
+                CacheImage(imagePath: posterPath, width: 95),              
+              const SizedBox(width: 15),
+              Expanded(
+                child: Container(
+                  decoration: const BoxDecoration(
+                    border: Border(bottom: BorderSide(color: Colors.grey))
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -115,7 +113,9 @@ class _TvShowListRowWidget extends StatelessWidget {
                       Text(
                         show.title,
                         style: const TextStyle(
-                            fontWeight: FontWeight.bold),
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white
+                        ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -126,30 +126,51 @@ class _TvShowListRowWidget extends StatelessWidget {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 5,),
+                        Row(
+                          children: [
+                            Text(
+                              show.voteAverage,
+                              style: const TextStyle(color: Colors.green),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            const SizedBox(width: 5,),
+                            Text(
+                              show.voteCount,
+                              style: const TextStyle(color: Colors.grey),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ),
+                      const SizedBox(height: 5),
                       Text(
                         show.overview,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                            color: Colors.white
+                        ),
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(width: 10),
-              ],
-            ),
+              ),
+              const SizedBox(width: 10),
+            ],
           ),
-          Material(
-            color: Colors.transparent,
-            child: InkWell(
-              borderRadius: BorderRadius.circular(10),
-              onTap: () {
-                model.onMovieTap(context, index);
-              },
-            ),
+        ),
+        Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(10),
+            onTap: () {
+              model.onMovieTap(context, index);
+            },
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

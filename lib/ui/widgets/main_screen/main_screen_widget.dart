@@ -31,6 +31,7 @@ class _MainScreenWidgetState extends State<MainScreenWidget> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("TMDB", style: TextStyle(color: Colors.white,)),
+        foregroundColor: Colors.white,
         actions: [
           IconButton(onPressed: () {
             SessionDataProvider().setSessionId(null);

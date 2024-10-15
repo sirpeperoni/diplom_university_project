@@ -30,7 +30,7 @@ class TvShowApiClient{
         'page':page.toString(),
         'language':locale,
         'query': query,
-        'include_adult': true.toString()
+        'include_adult': false.toString()
       }
     );
     return result;

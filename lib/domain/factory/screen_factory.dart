@@ -107,10 +107,12 @@ class ScreenFactory{
     );
   }
 
-  Widget makeDiscoverMoviesListWidget(String genres, String countries){
+  Widget makeDiscoverMoviesListWidget(String genres, String countries, String primaryReleaseDateGTE, String primaryReleaseDateLTE, double voteAverageGte, double voteAverageLte){
     return ChangeNotifierProvider(
-      create: (_) => ResultsModel(genres, countries),
+      create: (_) => ResultsModel(genres, countries, primaryReleaseDateGTE, primaryReleaseDateLTE, voteAverageGte, voteAverageLte),
       child: const ResultDiscoverMovieListWidget(),
     );
   }
+
+
 }

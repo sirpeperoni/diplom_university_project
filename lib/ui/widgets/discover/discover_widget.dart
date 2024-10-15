@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_holo_date_picker/flutter_holo_date_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:the_movie_db/ui/widgets/discover/discover_model.dart';
-import 'package:flutter_spinner_item_selector/flutter_spinner_item_selector.dart';
+
 
 class DiscoverWidget extends StatefulWidget {
   const DiscoverWidget({super.key});
@@ -25,9 +26,9 @@ class _DiscoverWidgetState extends State<DiscoverWidget> {
       Column(
         children:[ 
           if(isChooseCountries && !isChooseGenres) ...[
-            Expanded(child: GenresListWidget()),]
-          else if(isChooseGenres && !isChooseCountries) ...[
             const Expanded(child: CountriesListWidget()),]
+          else if(isChooseGenres && !isChooseCountries) ...[
+            const Expanded(child: GenresListWidget()),]
           else ...[
             const SearchMenuWidget(),
           ]
@@ -36,27 +37,71 @@ class _DiscoverWidgetState extends State<DiscoverWidget> {
 }
 
 
-class SearchMenuWidget extends StatelessWidget {
+class SearchMenuWidget extends StatefulWidget {
   const SearchMenuWidget({super.key});
+
+  @override
+  State<SearchMenuWidget> createState() => _SearchMenuWidgetState();
+}
+
+class _SearchMenuWidgetState extends State<SearchMenuWidget> {
   @override
   Widget build(BuildContext context) {
-    final model = context.read<DiscoverViewModel>();
+    final model = context.watch<DiscoverViewModel>();
     return Column(
       children: [
         const GenreListIsNotOpenWidget(),
         const CountriesListIsNotOpenWidget(),
         const YearPickerIsNotOpenWidget(),
+        Container(height: 10, 
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        decoration: const BoxDecoration(
+          border: Border(bottom: BorderSide(color: Colors.grey, width: 0.2))
+        ),),
         Container(
-          width: 50,
-          height: 50,
-          color: Colors.amber,
-          child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(10),
-                  onTap: () => model.onSubmitTap(context),
-                ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.only(left: 10, top: 10),
+                    child: Text("Рейтинг", style: const TextStyle(color: Colors.white)),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 10, top: 10),
+                    child: (model.min == 0 && model.max == 10) ? const Text("неважно", style: const TextStyle(color: Colors.white)) 
+                      : Text(model.rating, style: const TextStyle(color: Colors.white)),
+                  ),
+                ],
               ),
+              RangeSlider(
+                values: model.currentRangeValues,
+                divisions: 10,
+                max: 10,
+                min: 0,
+                labels: RangeLabels(
+                  model.currentRangeValues.start.round().toString(),
+                  model.currentRangeValues.end.round().toString(),
+                ),
+                onChanged: (RangeValues values){
+                  model.changeCurrentRangeValues(values);
+                }
+              ),
+            ],
+          ),
+        ),
+        SizedBox(
+          width: MediaQuery.sizeOf(context).width,
+          child: ElevatedButton(
+            onPressed: () => model.onSubmitTap(context),
+            style: ElevatedButton.styleFrom(
+              foregroundColor: Colors.white,
+              backgroundColor: const Color.fromARGB(255, 255, 94, 0),
+            ),
+            child: const Text("Показать"),
+          )
         ),
       ],
     );
@@ -109,7 +154,7 @@ class SubmitButtonWidget extends StatelessWidget {
 }
 
 class GenresListWidget extends StatefulWidget {
-  GenresListWidget({super.key});
+  const GenresListWidget({super.key});
 
   @override
   State<GenresListWidget> createState() => _GenresListWidgetState();
@@ -147,7 +192,7 @@ class _GenresListWidgetState extends State<GenresListWidget> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(genre, style: TextStyle(color: Colors.white),),
+                      Text(genre, style: const TextStyle(color: Colors.white),),
                       choose ? const Icon(Icons.check, color: Color.fromARGB(255, 255, 94, 0),) : const SizedBox.shrink()
                     ],
                   )
@@ -156,15 +201,15 @@ class _GenresListWidgetState extends State<GenresListWidget> {
             },
                 ),
         ),
-        Container(
+        SizedBox(
           width: MediaQuery.sizeOf(context).width,
           child: ElevatedButton(
             onPressed: () => model.changeGenre(),
-            child: Text("Выбрать"),
             style: ElevatedButton.styleFrom(
               foregroundColor: Colors.white,
-              backgroundColor: Color.fromARGB(255, 255, 94, 0),
+              backgroundColor: const Color.fromARGB(255, 255, 94, 0),
             ),
+            child: const Text("Выбрать"),
           )
         ),
       ],
@@ -186,14 +231,14 @@ class GenreListIsNotOpenWidget extends StatelessWidget {
       },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.blueAccent)
+        decoration: const BoxDecoration(
+          border: Border.symmetric(horizontal: BorderSide(color: Colors.grey, width: 0.1))
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text("Жанры"),
-            model.toggleGenres.isEmpty ? const Text("любые") : Text(toggleGenres),
+            const Text("Жанры", style: TextStyle(color: Colors.white)),
+            model.toggleGenres.isEmpty ? const Text("любые", style: TextStyle(color: Colors.white)) : Text(toggleGenres,style: const TextStyle(color: Colors.white)),
           ],
         ),
       ),
@@ -210,12 +255,11 @@ class CountriesListWidget extends StatefulWidget {
 }
 
 class _CountriesListWidgetState extends State<CountriesListWidget> {
-    @override
-
   @override
   Widget build(BuildContext context) {
  
     final model = context.watch<DiscoverViewModel>();
+    
     return Column(
       children: [
         const _SearchInCountryWidget(),
@@ -258,15 +302,15 @@ class _CountriesListWidgetState extends State<CountriesListWidget> {
             },
                 ),
         ),
-        Container(
+        SizedBox(
           width: MediaQuery.sizeOf(context).width,
           child: ElevatedButton(
             onPressed: () => model.changeCountries(),
-            child: Text("Выбрать"),
             style: ElevatedButton.styleFrom(
               foregroundColor: Colors.white,
-              backgroundColor: Color.fromARGB(255, 255, 94, 0),
+              backgroundColor: const Color.fromARGB(255, 255, 94, 0),
             ),
+            child: const Text("Выбрать"),
           )
         ),
       ],
@@ -288,14 +332,14 @@ class CountriesListIsNotOpenWidget extends StatelessWidget {
       },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.blueAccent)
+        decoration: const BoxDecoration(
+          border: Border.symmetric(horizontal: BorderSide(color: Colors.grey, width: 0.1))
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            const Text("Страны"),
-            model.toggleCountry.isEmpty ? const Text("любые") : Text(toggleCountries),
+            const Text("Страны", style: TextStyle(color: Colors.white)),
+            model.toggleCountry.isEmpty ? const Text("любые", style: TextStyle(color: Colors.white)) : Text(toggleCountries, style: const TextStyle(color: Colors.white)),
           ],
         ),
       ),
@@ -312,94 +356,109 @@ class YearPickerIsNotOpenWidget extends StatefulWidget {
 }
 
 class _YearPickerIsNotOpenWidgetState extends State<YearPickerIsNotOpenWidget> {
-  String showYear = 'Select Year';
-  final DateTime _selectedYear = DateTime.now();
-  void F(){
-    showDialog(
+  @override
+  Widget build(BuildContext context) {
+
+  Future<DateTime?> show(BuildContext context){
+    var discoverState = Provider.of<DiscoverViewModel>(context, listen: false);
+    return showDialog(
       context: context,
-       builder: (BuildContext context){
-        return AlertDialog(
-          insetPadding: const EdgeInsets.all(0),
-          iconPadding: const EdgeInsets.all(0),
-          actionsPadding: const EdgeInsets.all(0),
-          buttonPadding: const EdgeInsets.all(0),
-          title: const Text("Год"),
-          content: SizedBox(
-            width: 200,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                SpinnerItemSelector(
-                  items: const [
-                            "1900",
-                            "1902",
-                            "1903",
-                            "1904",
-                            "1905",
-                        ],
-                  scrollAxis: Axis.vertical,
-                  height: 200,
-                  width: 50,
-                  itemHeight: 50,
-                  itemWidth: 100,
-                  selectedItemToWidget: (item) => Text(item),
-                  nonSelectedItemToWidget: (item) => Opacity(opacity: 0.4, child: Text(item)),
-                  onSelectedItemChanged: (item) {
-                            
-                        },
-                  spinnerBgColor: Colors.white
-                ),
-                SpinnerItemSelector<Widget>(
-                  items: const [
-                            Text("1901"),
-                            Text("1902"),
-                            Text("1903"),
-                            Text("1904"),
-                            Text("1905"),
-                        ],
-                  scrollAxis: Axis.vertical,
-                  height: 200,
-                  width: 50,
-                  itemHeight: 50,
-                  itemWidth: 50,
-                  selectedItemToWidget: (item) => item,
-                  nonSelectedItemToWidget: (item) => Opacity(opacity: 0.4, child: item as Text),
-                  onSelectedItemChanged: (item) {
-                            // handle selected item 
-                        },
-                  spinnerBgColor: Colors.white
-                ),
-              ],
-            ),
-          ),
+      builder: (context) {
+        return ChangeNotifierProvider.value(
+          value: discoverState,
+          child: const YearSpinner(),
         );
-       }
+      }
     );
   }
-  
+  final model = context.watch<DiscoverViewModel>();
+  return InkWell(
+    onTap: () async {
+      //showYearPicker();
+      show(context);
+    },
+    child: Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      decoration: const BoxDecoration(
+        border: Border.symmetric(horizontal: BorderSide(color: Colors.grey, width: 0.1))
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          const Text("Год", style: TextStyle(color: Colors.white),),
+          (model.selectedFromYear == 1887 && model.selectedToYear == DateTime.now().year) ? const Text("любые", style: TextStyle(color: Colors.white))
+            : Text(model.primaryRelease, style: const TextStyle(color: Colors.white))
+        ],
+      ),
+    ),
+  );
+  }
+}
+
+class YearSpinner extends StatelessWidget {
+  const YearSpinner({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final model = context.read<DiscoverViewModel>();
-    final fromYear = context.select((DiscoverViewModel model) => model.fromYear);
-    dynamic lastYear;
-
-    return InkWell(
-      onTap: () {
-        
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.blueAccent)
-        ),
-        child:const Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text("Страны"),
-            Text("любой"),
-          ],
-        ),
+    final model = context.watch<DiscoverViewModel>();
+    return AlertDialog(
+      title: const Text("Год", style: TextStyle(color: Colors.white)),
+      contentPadding: const EdgeInsets.symmetric(vertical: 20, horizontal: 0),
+      backgroundColor: const Color.fromARGB(255, 38, 38, 38),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(0))),
+      
+      actions: [
+        TextButton(onPressed: (){
+          
+        }, child: Text("Сбросить", style: TextStyle(color: Colors.white))),
+        TextButton(onPressed: (){
+          model.acceptChangeYear();
+          Navigator.of(context).pop();
+        }, child: Text("Выбрать", style: TextStyle(color: Colors.white))),
+      ],
+      content: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: 100,
+            child: DatePickerWidget(
+              firstDate: DateTime(1887),
+              lastDate: DateTime.now(),
+              initialDate: DateTime(model.selectedFromYear),
+              dateFormat: "yyyy",
+              locale: DateTimePickerLocale.ru,
+              looping: true,
+              pickerTheme: const DateTimePickerTheme(
+                backgroundColor: Color.fromARGB(255, 38, 38, 38),
+                itemTextStyle: TextStyle(color: Colors.white),
+              ),
+              onChange: (DateTime newDate, _){
+                model.changeFromYear(newDate.year);
+              },
+            ),
+          ),
+          Container(
+            width: 100,
+            child: DatePickerWidget(
+              firstDate: DateTime(1887),
+              lastDate: DateTime.now(),
+              initialDate: DateTime(model.selectedToYear),
+              dateFormat: "yyyy",
+              locale: DateTimePickerLocale.ru,
+              looping: true,
+              pickerTheme: const DateTimePickerTheme(
+                backgroundColor: Color.fromARGB(255, 38, 38, 38),
+                itemTextStyle: TextStyle(color: Colors.white),
+              ),
+              onChange: (DateTime newDate, _){
+                model.changeToYear(newDate.year);
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

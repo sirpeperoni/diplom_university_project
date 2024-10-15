@@ -55,11 +55,15 @@ class MainNavigation{
         );
       case MainNavigationRoutesName.discoverScreenMovieResult:
         final arguments = settings.arguments;
-        final args = arguments is ScreenArguments ? arguments : ScreenArguments(countries: '', genres: '');
+        final args = arguments is ScreenArguments ? arguments : ScreenArguments(countries: '', genres: '', primaryReleaseDateGTE: '', primaryReleaseDateLTE: '', voteAverageGte: 0, voteAverageLte: 10);
         final genres = args.genres;
         final countries = args.countries;
+        final primaryReleaseDateGTE = args.primaryReleaseDateGTE;
+        final primaryReleaseDateLTE = args.primaryReleaseDateLTE;
+        final voteAverageGte = args.voteAverageGte;
+        final voteAverageLte = args.voteAverageLte;
         return MaterialPageRoute(
-          builder: (_) => _screenFactory.makeDiscoverMoviesListWidget(genres, countries),
+          builder: (_) => _screenFactory.makeDiscoverMoviesListWidget(genres, countries, primaryReleaseDateGTE, primaryReleaseDateLTE, voteAverageGte, voteAverageLte),
         );
       case MainNavigationRoutesName.tvShowScreenDetails:
         final arguments = settings.arguments;

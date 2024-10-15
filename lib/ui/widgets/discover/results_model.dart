@@ -4,6 +4,7 @@ import 'package:the_movie_db/domain/entity/movie.dart';
 import 'package:the_movie_db/domain/services/movie_service.dart';
 import 'package:the_movie_db/library/Widgets/localized_model.dart';
 import 'package:the_movie_db/library/paginator.dart';
+import 'package:the_movie_db/ui/navigation/main_navigation.dart';
 
 
 class MovieListRowData {
@@ -12,13 +13,17 @@ class MovieListRowData {
   final String title;
   final String releaseDate;
   final String overview;
+  final String voteAverage;
+  final String voteCount;
 
   MovieListRowData(
     {required this.id,
      required this.posterPath,
      required this.title,
      required this.releaseDate,
-     required this.overview
+     required this.overview,
+      required this.voteCount,
+     required this.voteAverage
   });
 }
 
@@ -33,9 +38,9 @@ class ResultsModel extends ChangeNotifier{
 
   List<MovieListRowData> get movies => List.unmodifiable(_movies);
 
-  ResultsModel(String genres, String countries){
+  ResultsModel(String genres, String countries, String primaryReleaseDateGTE, String primaryReleaseDateLTE, double voteAverageGte, double voteAverageLte){
     _discoverMoviePaginator = Paginator<Movie>((page) async {
-      final result = await _movieService.getDiscoverMovies(page, _localStorage.localeTag, genres, countries);
+      final result = await _movieService.getDiscoverMovies(page, _localStorage.localeTag, genres, countries, primaryReleaseDateGTE, primaryReleaseDateLTE, voteAverageGte, voteAverageLte);
       return PaginatorLoadResult(data: result.movies, currentPage: result.page, totalPage: result.totalPages);
     } );
   }
@@ -64,7 +69,25 @@ class ResultsModel extends ChangeNotifier{
   MovieListRowData _makeRowData(Movie movie){
     final releaseDate = movie.releaseDate;
     final releaseDateTitle = releaseDate != null ? _dateFormat.format(releaseDate) : '';
-    return MovieListRowData(id: movie.id, posterPath: movie.posterPath, title: movie.title, releaseDate: releaseDateTitle, overview: movie.overview);
+    final voteAverage = movie.voteAverage.toStringAsPrecision(2);
+    final voteCount = movie.voteCount.toString();
+    return MovieListRowData(
+      id: movie.id,
+      posterPath: movie.posterPath,
+      title: movie.title,
+      releaseDate: releaseDateTitle,
+      overview: movie.overview,
+      voteAverage: voteAverage,
+      voteCount: voteCount
+    );
+  }
+  
+  void onMovieTap(BuildContext context, int index) {
+    final id = _movies[index].id;
+    Navigator.of(context).pushNamed(
+      MainNavigationRoutesName.movieDetails,
+      arguments: id
+    );
   }
 
   void showedMovieAtIndex(int index) {

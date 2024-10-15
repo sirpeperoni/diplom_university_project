@@ -26,7 +26,8 @@ class _PeopleDetailsWidgetState extends State<PeopleDetailsWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const _TitleWidget()
+        title: const _TitleWidget(),
+        foregroundColor: Colors.white,
       ),
       body: const ColoredBox(
         color: Color.fromRGBO(255, 255, 255, 1),

@@ -47,7 +47,7 @@ class MovieApiClient{
         'page':page.toString(),
         'language':locale,
         'query': query,
-        'include_adult': true.toString(),
+        'include_adult': false.toString(),
       }
     );
     return result;
@@ -136,7 +136,16 @@ class MovieApiClient{
   }
 
 
-  Future<PopularMovieResponse> getDiscoverMovies(int page, String locale, String genres, String countries) async {
+  Future<PopularMovieResponse> getDiscoverMovies(
+    int page,
+    String locale,
+    String genres,
+    String countries,
+    String primaryReleaseDateGTE,
+    String primaryReleaseDateLTE,
+    double voteAverageGte,
+    double voteAverageLte
+  ) async {
     parser(dynamic json) {
       final jsonMap = json as Map<String, dynamic>;
       final response = PopularMovieResponse.fromJson(jsonMap);
@@ -149,7 +158,12 @@ class MovieApiClient{
         'page':page.toString(),
         'language':locale,
         'with_genres':genres,
-        'with_origin_country':countries
+        'with_origin_country':countries,
+        'primary_release_date.gte':primaryReleaseDateGTE,
+        'primary_release_date.lte':primaryReleaseDateLTE,
+        'vote_average.gte':voteAverageGte.toString(),
+        'vote_average.lte':voteAverageLte.toString(),
+        'include_adult': false.toString(),
       }
     );
     return result;

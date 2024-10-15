@@ -26,7 +26,8 @@ class _MovieDetailsWidgetState extends State<MovieDetailsWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const _TitleWidget()
+        title: const _TitleWidget(),
+        foregroundColor: Colors.white,
       ),
       body: const ColoredBox(
         color: Color.fromRGBO(24, 23, 27, 1.0),

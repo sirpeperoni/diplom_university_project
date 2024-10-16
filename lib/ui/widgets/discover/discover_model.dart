@@ -30,6 +30,8 @@ class DiscoverViewModel extends ChangeNotifier{
   RangeValues currentRangeValues = RangeValues(0, 10);
   String rating = '';
 
+  var sortType = 'vote_average.desc';
+
   void changeCurrentRangeValues(RangeValues values){
     currentRangeValues = values;
     min = currentRangeValues.start;
@@ -134,12 +136,18 @@ class DiscoverViewModel extends ChangeNotifier{
       primaryReleaseDateGTE: primaryReleaseDateGTE,
       primaryReleaseDateLTE: primaryReleaseDateLTE,
       voteAverageGte: min,
-      voteAverageLte: max
+      voteAverageLte: max,
+      sortBy: sortType
     );
     Navigator.of(context).pushNamed(
       MainNavigationRoutesName.discoverScreenMovieResult,
       arguments: arguments
     );
+  }
+
+  void changeSort(String sort){
+    sortType = sort;
+    notifyListeners();
   }
 
   void updateData(){
@@ -216,13 +224,15 @@ class ScreenArguments{
   final String primaryReleaseDateLTE;
   final double voteAverageGte;
   final double voteAverageLte;
+  final String sortBy;
   ScreenArguments({
     required this.countries,
     required this.genres,
     required this.primaryReleaseDateGTE,
     required this.primaryReleaseDateLTE,
     required this.voteAverageGte,
-    required this.voteAverageLte
+    required this.voteAverageLte,
+    required this.sortBy
   });
 }
 

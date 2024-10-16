@@ -119,7 +119,8 @@ class MovieService{
     String primaryReleaseDateGTE,
     String primaryReleaseDateLTE,
     double voteAverageGte,
-    double voteAverageLte
-  ) async => await _movieApiClient.getDiscoverMovies(page, locale, genres, countries, primaryReleaseDateGTE, primaryReleaseDateLTE, voteAverageGte, voteAverageLte);
+    double voteAverageLte,
+    String sortBy
+  ) async => await _movieApiClient.getDiscoverMovies(page, locale, genres, countries, primaryReleaseDateGTE, primaryReleaseDateLTE, voteAverageGte, voteAverageLte, sortBy);
 
 }

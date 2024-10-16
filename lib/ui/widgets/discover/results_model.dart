@@ -38,9 +38,9 @@ class ResultsModel extends ChangeNotifier{
 
   List<MovieListRowData> get movies => List.unmodifiable(_movies);
 
-  ResultsModel(String genres, String countries, String primaryReleaseDateGTE, String primaryReleaseDateLTE, double voteAverageGte, double voteAverageLte){
+  ResultsModel(String genres, String countries, String primaryReleaseDateGTE, String primaryReleaseDateLTE, double voteAverageGte, double voteAverageLte, String sortBy){
     _discoverMoviePaginator = Paginator<Movie>((page) async {
-      final result = await _movieService.getDiscoverMovies(page, _localStorage.localeTag, genres, countries, primaryReleaseDateGTE, primaryReleaseDateLTE, voteAverageGte, voteAverageLte);
+      final result = await _movieService.getDiscoverMovies(page, _localStorage.localeTag, genres, countries, primaryReleaseDateGTE, primaryReleaseDateLTE, voteAverageGte, voteAverageLte, sortBy);
       return PaginatorLoadResult(data: result.movies, currentPage: result.page, totalPage: result.totalPages);
     } );
   }

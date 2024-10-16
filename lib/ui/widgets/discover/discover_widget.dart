@@ -49,15 +49,12 @@ class _SearchMenuWidgetState extends State<SearchMenuWidget> {
   Widget build(BuildContext context) {
     final model = context.watch<DiscoverViewModel>();
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const GenreListIsNotOpenWidget(),
         const CountriesListIsNotOpenWidget(),
         const YearPickerIsNotOpenWidget(),
-        Container(height: 10, 
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-        decoration: const BoxDecoration(
-          border: Border(bottom: BorderSide(color: Colors.grey, width: 0.2))
-        ),),
+        const SpacerWidget(),
         Container(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -92,6 +89,15 @@ class _SearchMenuWidgetState extends State<SearchMenuWidget> {
             ],
           ),
         ),
+        Container(
+          width: MediaQuery.sizeOf(context).width,
+          padding: const EdgeInsets.only(left: 10, top: 15, bottom: 15),
+          decoration: const BoxDecoration(
+            border: Border(bottom: BorderSide(color: Colors.grey, width: 0.2), top: BorderSide(color: Colors.grey, width: 0.2))
+          ),
+          child: const Text("Сортировать по", style: const TextStyle(color: Colors.grey)),
+        ),
+        SortButtonsWidget(),
         SizedBox(
           width: MediaQuery.sizeOf(context).width,
           child: ElevatedButton(
@@ -105,6 +111,101 @@ class _SearchMenuWidgetState extends State<SearchMenuWidget> {
         ),
       ],
     );
+  }
+}
+
+class SpacerWidget extends StatelessWidget {
+  const SpacerWidget({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(height: 10, 
+    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+    decoration: const BoxDecoration(
+      border: Border(bottom: BorderSide(color: Colors.grey, width: 0.2))
+    ),);
+  }
+}
+
+class SortButtonsWidget extends StatefulWidget {
+  const SortButtonsWidget({
+    super.key,
+  });
+
+  @override
+  State<SortButtonsWidget> createState() => _SortButtonsWidgetState();
+}
+
+class _SortButtonsWidgetState extends State<SortButtonsWidget> {
+  @override
+  Widget build(BuildContext context) {
+    final model = context.watch<DiscoverViewModel>();
+    return Row(
+              children: [
+                Container(
+                  width: MediaQuery.sizeOf(context).width / 3,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    border: Border(bottom: const BorderSide(color: Colors.grey, width: 0.2), top: model.sortType == 'vote_average.desc' ? const BorderSide(color: Colors.grey, width: 2) : const BorderSide(color: Colors.grey, width: 0.01))
+                  ),
+                  child: InkWell(
+                    onTap: () {
+                      model.changeSort('vote_average.desc');
+                    },
+                    child: Center(
+                      child: Text(
+                        "Рейтингу",
+                        style: TextStyle(
+                          color: model.sortType == 'vote_average.desc' ? Colors.white : Colors.grey
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+                  width: MediaQuery.sizeOf(context).width / 3,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    border: Border(bottom: const BorderSide(color: Colors.grey, width: 0.2), top: model.sortType == 'popularity.desc' ? const BorderSide(color: Colors.grey, width: 2) : const BorderSide(color: Colors.grey, width: 0.01))
+                  ),
+                  child: InkWell(
+                    onTap: () {
+                      model.changeSort('popularity.desc');
+                    },
+                    child: Center(
+                      child: Text(
+                        "Популярности",
+                      style: TextStyle(
+                        color: model.sortType == 'popularity.desc' ? Colors.white : Colors.grey
+                      ),
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+                  width: MediaQuery.sizeOf(context).width / 3,
+                  height: 50,
+                  decoration: BoxDecoration(
+                    border: Border(bottom: const BorderSide(color: Colors.grey, width: 0.2), top: model.sortType == 'primary_release_date.desc' ? const BorderSide(color: Colors.grey, width: 2) : const BorderSide(color: Colors.grey, width: 0.01))
+                  ),
+                  child: InkWell(
+                    onTap: () {
+                      model.changeSort('primary_release_date.desc');
+                    },
+                    child: Center(
+                      child: Text(
+                        "Дате",
+                      style: TextStyle(
+                        color: model.sortType == 'primary_release_date.desc' ? Colors.white : Colors.grey
+                      ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            );
   }
 }
 

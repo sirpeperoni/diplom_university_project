@@ -144,7 +144,8 @@ class MovieApiClient{
     String primaryReleaseDateGTE,
     String primaryReleaseDateLTE,
     double voteAverageGte,
-    double voteAverageLte
+    double voteAverageLte,
+    String sortBy
   ) async {
     parser(dynamic json) {
       final jsonMap = json as Map<String, dynamic>;
@@ -164,6 +165,8 @@ class MovieApiClient{
         'vote_average.gte':voteAverageGte.toString(),
         'vote_average.lte':voteAverageLte.toString(),
         'include_adult': false.toString(),
+        'sort_by':sortBy,
+        'vote_count.gte':50.toString()
       }
     );
     return result;

@@ -29,6 +29,7 @@ class _PeopleListWidgetState extends State<PeopleListWidget> {
   }
 }
 
+// ignore: unused_element
 class _SearchWidget extends StatelessWidget {
   const _SearchWidget();
 

@@ -19,6 +19,7 @@ class _TvShowDetailsWidgetState extends State<TvShowDetailsWidget> {
     super.didChangeDependencies();
     final locale =Localizations.localeOf(context);
     Future.microtask(
+      // ignore: use_build_context_synchronously
       () => context.read<TvShowDetailsModel>().setupLocale(context, locale)
     );
   }

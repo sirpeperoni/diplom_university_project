@@ -18,6 +18,7 @@ class _PeopleDetailsWidgetState extends State<PeopleDetailsWidget> {
     super.didChangeDependencies();
     final locale =Localizations.localeOf(context);
     Future.microtask(
+      // ignore: use_build_context_synchronously
       () => context.read<PeopleDetailsViewModel>().setupLocale(context, locale)
     );
   }

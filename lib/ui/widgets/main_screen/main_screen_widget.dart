@@ -47,7 +47,7 @@ class _MainScreenWidgetState extends State<MainScreenWidget> {
           _screenFactory.makeMovieList(),
           _screenFactory.makeTvShowList(),
           _screenFactory.makePeopleList(),
-          _screenFactory.makeDiscoverWidget(),
+          _screenFactory.makeSearchWidget(),
         ],
       ),
       bottomNavigationBar: Container(

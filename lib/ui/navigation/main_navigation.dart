@@ -13,8 +13,9 @@ abstract class MainNavigationRoutesName{
   static const movieTrailerWidget = '/main_screen/movie_details/trailer';
   static const personsScreenDetails = '/persons_screen/person_details';
   static const tvShowScreenDetails = '/tv_show_screen/tv_show_details';
-  static const discoverScreen = '/discover';
-  static const discoverScreenMovieResult = '/discover/movies';
+  static const searchScreen = '/search';
+  static const discoverScreen = '/search/discover';
+  static const discoverScreenMovieResult = '/search/discover/movies';
 }
 
 
@@ -30,7 +31,8 @@ class MainNavigation{
     MainNavigationRoutesName.mainScreen: (_) => _screenFactory.makeMainScreenWidget(),
     MainNavigationRoutesName.tvShowScreen: (_) => _screenFactory.makeTvShowList(),
     MainNavigationRoutesName.personsScreen: (_) => _screenFactory.makePeopleList(),
-    MainNavigationRoutesName.discoverScreen: (_) => _screenFactory.makeDiscoverWidget()
+    MainNavigationRoutesName.discoverScreen: (_) => _screenFactory.makeDiscoverWidget(),
+    MainNavigationRoutesName.searchScreen: (_) => _screenFactory.makeSearchWidget()
   };
 
   Route<Object> onGenerateRoute(RouteSettings settings){

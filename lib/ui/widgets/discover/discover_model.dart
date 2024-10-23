@@ -14,7 +14,7 @@ class DiscoverViewModel extends ChangeNotifier{
   final _movieService = MovieService();
   final _authService = AuthService();
   final _localeStorage = LocalizedModelStorage();
-
+  var backButton = true;
   var isChooseGenre = false;
   late List<GenresWithIcon> genres;
   List<GenresWithIcon> toggleGenres = [];
@@ -27,7 +27,7 @@ class DiscoverViewModel extends ChangeNotifier{
 
   double min = 0;
   double max = 10;
-  RangeValues currentRangeValues = RangeValues(0, 10);
+  RangeValues currentRangeValues = const RangeValues(0, 10);
   String rating = '';
 
   var sortType = 'vote_average.desc';
@@ -42,11 +42,13 @@ class DiscoverViewModel extends ChangeNotifier{
 
   void changeGenre(){
     isChooseGenre = !isChooseGenre;
+    backButton = !backButton;
     notifyListeners();
   }
 
   void changeCountries(){
     isChooseCountries = !isChooseCountries;
+    backButton = !backButton;
     seacrhCountry = countries;
     notifyListeners();
   }
@@ -123,9 +125,24 @@ class DiscoverViewModel extends ChangeNotifier{
 
    void reset(){
     toggleCountry.clear();
-    toggleGenres.cast();
+    toggleGenres.clear();
+    fromYear = 1887;
+    toYear = DateTime.now().year;
+    selectedFromYear = 1887;
+    selectedToYear = DateTime.now().year;
+    primaryReleaseDateGTE = "1887-01-01";
+    primaryReleaseDateLTE = "${DateTime.now().year}-01-01";
+    primaryRelease = '';
+    fYear = false;
+    tYear = false;
+    min = 0;
+    max = 10;
+    currentRangeValues = const RangeValues(0, 10);
+    rating = '';
+    sortType = 'vote_average.desc';
     notifyListeners();
    }
+   
 
   void onSubmitTap(BuildContext context) {
     final genresString = toggleGenres.map((e) => e.genre.id).join(',');
@@ -148,10 +165,6 @@ class DiscoverViewModel extends ChangeNotifier{
   void changeSort(String sort){
     sortType = sort;
     notifyListeners();
-  }
-
-  void updateData(){
-    
   }
 
   void _handleApiClientException(ApiClientException exeption, BuildContext context){
@@ -194,25 +207,23 @@ class DiscoverViewModel extends ChangeNotifier{
     selectedFromYear = fromYear;
     selectedToYear = toYear;
 
-    primaryReleaseDateLTE = "${toYear}-01-01";
+    primaryReleaseDateLTE = "$toYear-01-01";
     if(selectedFromYear > selectedToYear && fYear){
       fYear = false;
       selectedToYear = fromYear;
-      primaryReleaseDateLTE = "${toYear}-01-01";
+      primaryReleaseDateLTE = "$toYear-01-01";
     }
 
-    primaryReleaseDateGTE = "${fromYear}-01-01";
+    primaryReleaseDateGTE = "$fromYear-01-01";
     if(selectedFromYear > selectedToYear && tYear){
       tYear = false;
       selectedFromYear = toYear;
-      primaryReleaseDateGTE = "${fromYear}-01-01";
+      primaryReleaseDateGTE = "$fromYear-01-01";
     }
 
-    primaryRelease = '${selectedFromYear} - ${selectedToYear}';
+    primaryRelease = '$selectedFromYear - $selectedToYear';
     notifyListeners();
   }
-
-
 }
 
 
@@ -236,9 +247,3 @@ class ScreenArguments{
   });
 }
 
-
-class YearInit{
-  final String year;
-  final int id;
-  YearInit({required this.year, required this.id});
-}

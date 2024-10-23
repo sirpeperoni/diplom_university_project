@@ -22,17 +22,26 @@ class _DiscoverWidgetState extends State<DiscoverWidget> {
   Widget build(BuildContext context) {
     final isChooseCountries = context.select((DiscoverViewModel model) => model.isChooseCountries);
     final isChooseGenres = context.select((DiscoverViewModel model) => model.isChooseGenre);
+    final backButton = context.select((DiscoverViewModel model) => model.backButton);
     return 
-      Column(
-        children:[ 
-          if(isChooseCountries && !isChooseGenres) ...[
-            const Expanded(child: CountriesListWidget()),]
-          else if(isChooseGenres && !isChooseCountries) ...[
-            const Expanded(child: GenresListWidget()),]
-          else ...[
-            const SearchMenuWidget(),
-          ]
-      ]);
+      Scaffold(
+        appBar: AppBar(
+          title: const Text("Результаты", style: TextStyle(color: Colors.white,),),
+          foregroundColor: Colors.white,
+          automaticallyImplyLeading: backButton,
+        ),
+        backgroundColor: Colors.black,
+        body: Column(
+          children:[ 
+            if(isChooseCountries && !isChooseGenres) ...[
+              const Expanded(child: CountriesListWidget()),]
+            else if(isChooseGenres && !isChooseCountries) ...[
+              const Expanded(child: GenresListWidget()),]
+            else ...[
+              const SearchMenuWidget(),
+            ]
+        ]),
+      );
   }
 }
 
@@ -55,39 +64,37 @@ class _SearchMenuWidgetState extends State<SearchMenuWidget> {
         const CountriesListIsNotOpenWidget(),
         const YearPickerIsNotOpenWidget(),
         const SpacerWidget(),
-        Container(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.only(left: 10, top: 10),
-                    child: Text("Рейтинг", style: const TextStyle(color: Colors.white)),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 10, top: 10),
-                    child: (model.min == 0 && model.max == 10) ? const Text("неважно", style: const TextStyle(color: Colors.white)) 
-                      : Text(model.rating, style: const TextStyle(color: Colors.white)),
-                  ),
-                ],
-              ),
-              RangeSlider(
-                values: model.currentRangeValues,
-                divisions: 10,
-                max: 10,
-                min: 0,
-                labels: RangeLabels(
-                  model.currentRangeValues.start.round().toString(),
-                  model.currentRangeValues.end.round().toString(),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(left: 10, top: 10),
+                  child: Text("Рейтинг", style: TextStyle(color: Colors.white)),
                 ),
-                onChanged: (RangeValues values){
-                  model.changeCurrentRangeValues(values);
-                }
+                Padding(
+                  padding: const EdgeInsets.only(right: 10, top: 10),
+                  child: (model.min == 0 && model.max == 10) ? const Text("неважно", style: TextStyle(color: Colors.white)) 
+                    : Text(model.rating, style: const TextStyle(color: Colors.white)),
+                ),
+              ],
+            ),
+            RangeSlider(
+              values: model.currentRangeValues,
+              divisions: 10,
+              max: 10,
+              min: 0,
+              labels: RangeLabels(
+                model.currentRangeValues.start.round().toString(),
+                model.currentRangeValues.end.round().toString(),
               ),
-            ],
-          ),
+              onChanged: (RangeValues values){
+                model.changeCurrentRangeValues(values);
+              }
+            ),
+          ],
         ),
         Container(
           width: MediaQuery.sizeOf(context).width,
@@ -95,9 +102,9 @@ class _SearchMenuWidgetState extends State<SearchMenuWidget> {
           decoration: const BoxDecoration(
             border: Border(bottom: BorderSide(color: Colors.grey, width: 0.2), top: BorderSide(color: Colors.grey, width: 0.2))
           ),
-          child: const Text("Сортировать по", style: const TextStyle(color: Colors.grey)),
+          child: const Text("Сортировать по", style: TextStyle(color: Colors.grey)),
         ),
-        SortButtonsWidget(),
+        const SortButtonsWidget(),
         SizedBox(
           width: MediaQuery.sizeOf(context).width,
           child: ElevatedButton(
@@ -514,16 +521,16 @@ class YearSpinner extends StatelessWidget {
       actions: [
         TextButton(onPressed: (){
           
-        }, child: Text("Сбросить", style: TextStyle(color: Colors.white))),
+        }, child: const Text("Сбросить", style: TextStyle(color: Colors.white))),
         TextButton(onPressed: (){
           model.acceptChangeYear();
           Navigator.of(context).pop();
-        }, child: Text("Выбрать", style: TextStyle(color: Colors.white))),
+        }, child: const Text("Выбрать", style: TextStyle(color: Colors.white))),
       ],
       content: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
+          SizedBox(
             width: 100,
             child: DatePickerWidget(
               firstDate: DateTime(1887),
@@ -541,7 +548,7 @@ class YearSpinner extends StatelessWidget {
               },
             ),
           ),
-          Container(
+          SizedBox(
             width: 100,
             child: DatePickerWidget(
               firstDate: DateTime(1887),

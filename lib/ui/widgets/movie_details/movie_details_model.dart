@@ -161,10 +161,11 @@ class MovieDetailsModel extends ChangeNotifier{
     final hours = duration.inHours;
     final minutes = duration.inMinutes.remainder(60);
     texts.add('${hours}h ${minutes}m');
-    if(details.genres.isNotEmpty){
+    if(details.genres != null && details.genres!.isNotEmpty){
       var genresNames = <String>[];
-      for(var genre in details.genres){
-      genresNames.add(genre.name);
+      final genres = details.genres ?? [];
+      for(var genre in genres){
+        genresNames.add(genre.name);
       }
       texts.add(genresNames.join(', '));
     }

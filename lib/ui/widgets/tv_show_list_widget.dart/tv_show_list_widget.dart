@@ -29,6 +29,7 @@ class _TWShowListWidgetState extends State<TWShowListWidget> {
   }
 }
 
+// ignore: unused_element
 class _SearchWidget extends StatelessWidget {
   const _SearchWidget();
   @override

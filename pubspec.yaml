@@ -23,6 +23,10 @@ dependencies:
   flutter_spinner_item_selector: ^1.0.0
   flutter_holo_date_picker: ^2.0.0
   flutter_form_builder: ^9.5.0
+  flutter_typeahead: ^5.2.0
+  searchfield: ^1.1.6
+  dropdown_search: ^6.0.1
+  search_choices: ^2.2.11
   
   
 dev_dependencies:
